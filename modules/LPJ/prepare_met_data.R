@@ -49,8 +49,8 @@ prepare_met_data <- function() {
     out <- merge(dDF, dDF3, by=c("Date"))
     
     ### save csv
-    write.csv(dDF, "output/EucFACE_met_data_for_LPJ.csv", row.names=F)
+    write.csv(out, "output/EucFACE_met_data_for_LPJ.csv", row.names=F)
 
-    return(dDF)
+    return(out)
     
 }
