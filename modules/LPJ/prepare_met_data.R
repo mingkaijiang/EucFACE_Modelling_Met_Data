@@ -33,21 +33,20 @@ prepare_met_data <- function() {
     myDF2$Ring <- sub("FACE_R", "", myDF2$Source)
     myDF2$Ring <- sub("_T1.*", "", myDF2$Ring)
     myDF2$Ring <- as.numeric(myDF2$Ring)  
-    myDF2 <- myDF[order(myDF2$DateTime),]
+    myDF2 <- myDF2[order(myDF2$DateTime),]
     myDF2$Month <- format(as.Date(myDF2$Date), "%Y-%m")
     myDF2$Month <- as.Date(paste0(myDF2$Month,"-1"), format = "%Y-%m-%d") 
     myDF2$DateHour <- as.POSIXct(paste0(myDF2$Date, " ", hour(myDF2$DateTime), ":00:00"),format = "%Y-%m-%d %H:%M:%S")
     
-    myDF2$AirTc_Avg <- as.numeric(myDF2$AirTc_Avg)
+    myDF2$Rain_mm_Tot <- as.numeric(myDF2$Rain_mm_Tot)
     
     ### Calculate daily mean
-    dDF2 <- aggregate(myDF2[c("AirTc_Avg","Net_SW_Avg", "Net_LW_Avg")], 
-                     by=myDF2[c("Date")], 
-                     FUN=mean, na.rm=T, keep.names=T)
+    dDF2 <- summaryBy(Rain_mm_Tot~Date+Ring, FUN=sum, data=myDF2, keep.names=T, na.rm=T)
+    
+    dDF3 <- summaryBy(Rain_mm_Tot~Date, FUN=mean, data=dDF2, keep.names=T, na.rm=T)
     
     ### merge
-    
-    ### date cut-off
+    out <- merge(dDF, dDF3, by=c("Date"))
     
     ### save csv
     write.csv(dDF, "output/EucFACE_met_data_for_LPJ.csv", row.names=F)
