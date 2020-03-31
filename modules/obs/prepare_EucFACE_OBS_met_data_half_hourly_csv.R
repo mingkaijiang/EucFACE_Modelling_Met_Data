@@ -1,4 +1,4 @@
-prepare_EucFACE_met_data_half_hourly_csv <- function() {
+prepare_EucFACE_OBS_met_data_half_hourly_csv <- function() {
     
     #### Download temperature and radiation data
     myDF <- download_temperature_data()
