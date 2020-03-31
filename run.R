@@ -20,14 +20,34 @@ source("prepare.R")
 ###                          Step 2: met data                           ###
 ###                                                                     ###
 ###########################################################################
-#### output met data in two formats:
-#### csv and netcdf
-#### output met data in two timesteps:
-#### half hourly, and daily
+#### Notes:
+#### a: output met data in two formats:
+####                                   csv and netcdf
+#### b: output met data in two timesteps:
+####                                   half hourly, and daily
+#### c: four periods: 
+####                 spin-up: 20-years of data
+####                 historic: recycle 20 years of data, but with 1750 - 2011 CO2 forcing
+####                 observed - OBS (2013 - 2019)
+####                 prdicted - PRD (2020 - 2069)
 
 ###########################################################################
 #### Step 2.1. prepare spin-up data
-#### weather data: recycle Martin's 50/20 year equilibrium weather data
+#### weather data: recycle Martin's 50 year equilibrium weather data
+
+#### half hourly:
+prepare_EucFACE_spinup_met_data_half_hourly_csv()
+
+prepare_EucFACE_spinup_met_data_half_hourly_nc()
+
+#### daily:
+prepare_EucFACE_spinup_met_data_daily_csv()
+
+prepare_EucFACE_spinup_met_data_daily_nc()
+
+###########################################################################
+#### Step 2.2. prepare historic data (1992 - 2011)
+#### weather data: recycle Martin's 1992 - 2011 weather data
 #### CO2, N and P deposition: realistic data over 1750 - 2012
 
 #### half hourly:
@@ -39,6 +59,7 @@ source("prepare.R")
 ###  csv
 
 ###  nc
+
 
 ###########################################################################
 #### Step 2.2. prepare 7-year simulation data (2013 - 2019)
