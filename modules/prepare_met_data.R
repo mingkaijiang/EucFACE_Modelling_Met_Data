@@ -1,4 +1,4 @@
-prepare_met_data <- function() {
+prepare_met_data_EucFACE <- function() {
     
     #### Download temperature and radiation data
     myDF <- download_temperature_data()
