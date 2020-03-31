@@ -1,4 +1,4 @@
-prepare_met_data_EucFACE <- function() {
+prepare_EucFACE_met_data_half_hourly_csv <- function() {
     
     #### Download temperature and radiation data
     myDF <- download_temperature_data()
@@ -49,8 +49,7 @@ prepare_met_data_EucFACE <- function() {
     out <- merge(dDF, dDF3, by=c("Date"))
     
     ### save csv
-    write.csv(out, "output/EucFACE_met_data_for_LPJ.csv", row.names=F)
+    write.csv(out, "output/EucFACE_met_data.csv", row.names=F)
 
-    return(out)
-    
+
 }

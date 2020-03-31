@@ -20,8 +20,17 @@ source("prepare.R")
 ###                          Step 2: met data                           ###
 ###                                                                     ###
 ###########################################################################
-metDF <- prepare_met_data_EucFACE()
+#### output met data in two formats:
+#### csv and netcdf
+#### output met data in two timesteps:
+#### half hourly, and daily
+prepare_EucFACE_met_data_half_hourly_csv()
 
+prepare_EucFACE_met_data_half_hourly_nc()
+
+prepare_EucFACE_met_data_daily_csv()
+
+prepare_EucFACE_met_data_daily_nc()
 
 
 
