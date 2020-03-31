@@ -10,6 +10,12 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     ### ignore Qair - near surface specific humidity
     inDF$Qair..kg.kg. <- NULL
     
+    ### add pre-industrial N deposition 
+    ### 2.25 kg N ha-1 yr-1
+    ### equivalent to: 0.225 g N m-2 yr-1
+    ### 
+    inDF$Ndep <- 0.225
+    
     ### generate a random year list
     set.seed(123)
     yr.list <- sample(1992:2011, 50, replace=T)
@@ -17,7 +23,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp")
+                  "CO2air", "SoilTemp", "Ndep")
     
     colnames(inDF) <- var.list
     
@@ -33,12 +39,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     
     ### force CO2 concentration to be pre-industrial
     outDF$CO2air <- 276.84
-    
-    ### add pre-industrial N deposition 
-    ### 2.25 kg N ha-1 yr-1
-    ### equivalent to: 0.225 g N m-2 yr-1
-    ### 
-    outDF$Ndep <- 0.225
+
     
     ### add unit and name list
     unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
@@ -50,11 +51,33 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
                    "relative humidity", "wind speed", "surface pressure",
                    "CO2 concentration", "soil temperature", "nitrogen deposition")
     
+    headDF <- data.frame(rbind(name.list, unit.list))
+    colnames(headDF) <- var.list
+    rownames(headDF) <- NULL
     
-    ### decide what to output
+    ### decide what timestep to output
     if(timestep == "half_hourly") {
+
+        write.table(headDF, "output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv",
+                    col.names=T, row.names=F, sep=",", append=F, quote = F)
+        
+        write.table(outDF, "output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv",
+                    col.names=F, row.names=F, sep=",", append=T, quote = F)
+        
         
     } else if(timestep == "daily") {
+        
+        ### generate daily means (day time means)
+        
+        
+        
+        
+        write.table(headDF, "output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv",
+                    col.names=T, row.names=F, sep=",", append=F, quote = F)
+        
+        write.table(outDF, "output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv",
+                    col.names=F, row.names=F, sep=",", append=T, quote = F)
+        
         
     }
     
