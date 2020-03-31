@@ -24,6 +24,15 @@ source("prepare.R")
 #### csv and netcdf
 #### output met data in two timesteps:
 #### half hourly, and daily
+
+###########################################################################
+#### Step 2.1. prepare spin-up data
+#### realistic N deposition data
+
+
+###########################################################################
+#### Step 2.2. prepare 7-year simulation data
+
 prepare_EucFACE_met_data_half_hourly_csv()
 
 prepare_EucFACE_met_data_half_hourly_nc()
@@ -31,6 +40,13 @@ prepare_EucFACE_met_data_half_hourly_nc()
 prepare_EucFACE_met_data_daily_csv()
 
 prepare_EucFACE_met_data_daily_nc()
+
+
+
+###########################################################################
+#### Step 2.3. Prepare 50-year future prediction data
+
+
 
 
 

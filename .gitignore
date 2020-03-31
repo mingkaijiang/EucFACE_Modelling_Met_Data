@@ -38,8 +38,10 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# output, token and other
+# output, input, token and other
 tokenfile.txt
 *.csv
 *.dat
 *.pdf
+*.nc
+
