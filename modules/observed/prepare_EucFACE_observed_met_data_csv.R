@@ -2,104 +2,59 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     #### Note: prepare observed data (2012 - 2019)
  
     #######################################################################################
-    ### read EucFACE temperature data
-    #### Download temperature and radiation data
-    myDF <- download_temperature_data()
-    
-    #### Assign ring information
-    myDF$Ring <- sub("FACE_R", "", myDF$Source)
-    myDF$Ring <- sub("_T1.*", "", myDF$Ring)
-    myDF$Ring <- as.numeric(myDF$Ring)  
-    myDF <- myDF[order(myDF$DateTime),]
-    myDF$Month <- format(as.Date(myDF$Date), "%Y-%m")
-    myDF$Month <- as.Date(paste0(myDF$Month,"-1"), format = "%Y-%m-%d") 
-    
-    myDF$Minute <- substr(myDF$DateTime, start=15, stop=16)
-    myDF$HalfHour <- ifelse(myDF$Minute > 30, "30", "00")
-    
-    myDF$DateHour <- as.POSIXct(paste0(myDF$Date, " ", hour(myDF$DateTime), ":",
-                                       myDF$HalfHour, ":00"),
-                                format = "%Y-%m-%d %H:%M:%S")
-    
-    myDF$AirTc_Avg <- as.numeric(myDF$AirTc_Avg)
-    myDF$RH_Avg <- as.numeric(myDF$RH_Avg)
-    myDF$Net_SW_Avg <- as.numeric(myDF$Net_SW_Avg)
-    myDF$Net_LW_Avg <- as.numeric(myDF$Net_LW_Avg)
-    myDF$LI190SB_PAR_Den_Avg <- as.numeric(myDF$LI190SB_PAR_Den_Avg)
-    
-    ### Calculate half hourly mean
-    tempDF <- aggregate(myDF[c("AirTc_Avg","Net_SW_Avg", "Net_LW_Avg", "RH_Avg",
-                               "LI190SB_PAR_Den_Avg")], 
-                     by=myDF[c("DateHour")], 
-                     FUN=mean, na.rm=T, keep.names=T)
-    
-    ### Colnames
-    colnames(tempDF) <- c("DateHour", "Tair", "SWnet", "LWnet", "RH", "PAR")
-    #######################################################################################
-    
-    #######################################################################################
-    ### read EucFACE rainfall data
-    ### download rainfall data
-    myDF2 <- download_rainfall_data()
-    
-    #### Assign ring information
-    myDF2$Ring <- sub("FACE_R", "", myDF2$Source)
-    myDF2$Ring <- sub("_T1.*", "", myDF2$Ring)
-    myDF2$Ring <- as.numeric(myDF2$Ring)  
-    myDF2 <- myDF2[order(myDF2$DateTime),]
-    myDF2$Month <- format(as.Date(myDF2$Date), "%Y-%m")
-    myDF2$Month <- as.Date(paste0(myDF2$Month,"-1"), format = "%Y-%m-%d") 
-    
-    myDF2$Minute <- substr(myDF2$DateTime, start=15, stop=16)
-    myDF2$HalfHour <- ifelse(myDF2$Minute > 30, "30", "00")
-    
-    myDF2$DateHour <- as.POSIXct(paste0(myDF2$Date, " ", hour(myDF2$DateTime), ":",
-                                        myDF2$HalfHour, ":00"),
-                                 format = "%Y-%m-%d %H:%M:%S")
-    
-    myDF2$Rain_mm_Tot <- as.numeric(myDF2$Rain_mm_Tot)
-    
-    ### Calculate half hourly total for each ring
-    tDF <- summaryBy(Rain_mm_Tot~DateHour+Ring, FUN=sum, data=myDF2, 
-                        keep.names=T, na.rm=T)
-    
-    precDF <- summaryBy(Rain_mm_Tot~DateHour, FUN=mean, data=tDF, keep.names=T, na.rm=T)
-    
-    ### merge
-    outDF1 <- merge(tempDF, precDF, by=c("DateHour"))
-    #######################################################################################
-    
-    #######################################################################################
-    ### read EucFACE data prepared by Jim Yang
-    myDF3 <- download_jimyang_data()
-    
-    colnames(myDF3) <- c("DateTime", "PSurf", "Wind", "PAR",
-                         "Tair", "RH", "Rain", "CO2ambient", "CO2elevated",
-                         "Date", "Source")
+    ### ROS station rainfall (and soil temperature, volumetric soil water content) data
+    myDF1 <- download_ros_table15_data()
     
     ### assign data and time information
-    myDF3$YEAR <- substr(myDF3$Source, start=21, stop=24)
-    myDF3$Month <- substr(myDF3$Source, start=25, stop=26)
-    myDF3$Sday <- substr(myDF3$Source, start=27, stop=28)
-    myDF3$Eday <- substr(myDF3$Source, start=36, stop=37)
+    myDF1$YEAR <- year(myDF1$Date)
+    myDF1$Month <- month(myDF1$Date)
+    myDF1$DOY <- yday(myDF1$Date)
+    myDF1$Hour <- substr(myDF1$DateTime, start=12, stop=13)
+    myDF1$Minute <- substr(myDF1$DateTime, start=15, stop=16)
     
-    ## ignore 2020
-    myDF3 <- subset(myDF3, YEAR != "2020")
+    ## ignore 2020 & 2011
+    myDF1 <- subset(myDF1, YEAR != "2020")
+    myDF1 <- subset(myDF1, YEAR != "2011")
     
-    ## loop
-    yr.list <- unique(myDF3$YEAR)
-    mn.list <- unique(myDF3$Month)
+    ## assign half hour 
+    myDF1$HalfHour <- ifelse(myDF1$Minute > 30, "30", "00")
     
-    outDF2 <- c()
+    ## half hourly rainfall data
+    outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
+                        data=myDF1, keep.names=T, na.rm=T)
+    #######################################################################################
     
-    for (i in yr.list) {
-        for (j in mn.list) {
-            tmpDF <- subset(myDF3, YEAR == i & Month == j)
-            nday <- dim(tmpDF)[1] / 48
-            
-            tmpDF$Nday <- 
-        }
-    }
+    #######################################################################################
+    ### ROS station radiation, wind speed, air temperature, humidity at 5 min interval
+    myDF2 <- download_ros_table05_data()
+    
+    ### assign data and time information
+    myDF2$YEAR <- year(myDF2$Date)
+    myDF2$Month <- month(myDF2$Date)
+    myDF2$DOY <- yday(myDF2$Date)
+    myDF2$Hour <- substr(myDF2$DateTime, start=12, stop=13)
+    myDF2$Minute <- substr(myDF2$DateTime, start=15, stop=16)
+    
+    ## ignore 2020 & 2011
+    myDF2 <- subset(myDF2, YEAR != "2020")
+    myDF2 <- subset(myDF2, YEAR != "2011")
+    
+    ## assign half hour 
+    myDF2$HalfHour <- ifelse(myDF2$Minute > 30, "30", "00")
+    
+    ## half hourly data
+    outDF2 <- summaryBy(PPFD_Avg+AirTC_Avg+RH+WS_ms_Avg+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
+                        FUN=mean,
+                        data=myDF2, keep.names=T, na.rm=T)
+    
+    ### merge the two datasets
+    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
+    
+    
+    #######################################################################################
+    ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
+    
+    myDF3 <- download_r3_flux_data()
     
     
     

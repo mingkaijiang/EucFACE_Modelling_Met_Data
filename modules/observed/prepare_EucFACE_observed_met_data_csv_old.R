@@ -97,7 +97,6 @@ prepare_EucFACE_observed_met_data_csv_old <- function(timestep) {
             tmpDF <- subset(myDF3, YEAR == i & Month == j)
             nday <- dim(tmpDF)[1] / 48
             
-            tmpDF$Nday <- 
         }
     }
     
