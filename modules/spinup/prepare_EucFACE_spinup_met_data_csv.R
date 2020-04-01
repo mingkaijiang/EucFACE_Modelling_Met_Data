@@ -131,10 +131,10 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
         colnames(headDF) <- var.list
         rownames(headDF) <- NULL
         
-        write.table(headDF, "output/spinup/csv/half_hourly/EUC_met_spinup_daily_50yrs.csv",
+        write.table(headDF, "output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(doutDF, "output/spinup/csv/half_hourly/EUC_met_spinup_daily_50yrs.csv",
+        write.table(doutDF, "output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         

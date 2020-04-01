@@ -61,12 +61,9 @@ prepare_EucFACE_historic_met_data_csv(timestep="daily")
 ####             OBS_DRY_AMB_NOP: aCO2, dry (realistic weather)
 ####             OBS_DRY_ELE_NOP: eCO2, dry (realsitic weather)
 
-### half hourly
-prepare_EucFACE_OBS_met_data_csv(timestep="half_hourly")
-prepare_EucFACE_OBS_met_data_csv(timestep="daily")
-
-prepare_EucFACE_OBS_met_data_half_hourly_nc()
-
+#### csv
+prepare_EucFACE_observed_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_observed_met_data_csv(timestep="daily")
 
 ###########################################################################
 #### Step 2.3. Prepare 50-year future prediction data
