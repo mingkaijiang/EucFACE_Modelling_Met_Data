@@ -41,9 +41,6 @@ prepare_EucFACE_spinup_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_spinup_met_data_csv(timestep="daily")
 
 #### nc
-#prepare_EucFACE_spinup_met_data_nc(timestep="half_hourly")
-
-#prepare_EucFACE_spinup_met_data_nc(timestep="daily")
 
 ###########################################################################
 #### Step 2.2. prepare historic data (1992 - 2011)

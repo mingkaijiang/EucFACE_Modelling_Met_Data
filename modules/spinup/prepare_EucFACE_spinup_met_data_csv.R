@@ -123,6 +123,10 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
                        "relative humidity", "wind speed", "surface pressure",
                        "CO2 concentration", "soil temperature", "nitrogen deposition")
         
+        var.list <- c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
+                      "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
+                      "CO2air", "SoilTemp", "Ndep")
+        
         headDF <- data.frame(rbind(name.list, unit.list))
         colnames(headDF) <- var.list
         rownames(headDF) <- NULL
