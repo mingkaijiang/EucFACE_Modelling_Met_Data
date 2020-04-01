@@ -35,10 +35,10 @@ source("prepare.R")
 #### Step 2.1. prepare spin-up data
 #### weather data: recycle Martin's 50 year equilibrium weather data
 
-#### half hourly:
-prepare_EucFACE_spinup_met_data_half_hourly_csv()
+### csv
+prepare_EucFACE_spinup_met_data_csv(timestep="half_hourly")
 
-prepare_EucFACE_spinup_met_data_half_hourly_nc()
+prepare_EucFACE_spinup_met_data_csv(timestep="daily")
 
 #### daily:
 prepare_EucFACE_spinup_met_data_daily_csv()
