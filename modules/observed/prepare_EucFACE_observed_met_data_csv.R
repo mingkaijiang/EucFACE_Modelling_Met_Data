@@ -2,17 +2,6 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     #### Note: prepare observed data (2012 - 2019)
  
     #######################################################################################
-    ### read N deposition and CO2 data
-    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
-    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
-    ndepDF$elevatedCO2 <- NULL
-    ndepDF$Ndep <- ndepDF$Ndep / 10
-    headDF <- data.frame(rbind(c("year", "doy", "ppmv", "g M m-2 yr-1"),
-                               c("year", "doy", "CO2 concentration", "nitrogen deposition")))
-    colnames(headDF) <- c("YEAR", "DOY", "CO2air", "Ndep")
-    #######################################################################################
-    
-    #######################################################################################
     ### read EucFACE temperature data
     #### Download temperature and radiation data
     myDF <- download_temperature_data()
@@ -70,13 +59,15 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     
     myDF2$Rain_mm_Tot <- as.numeric(myDF2$Rain_mm_Tot)
     
-    ### Calculate daily mean
-    dDF2 <- summaryBy(Rain_mm_Tot~Date+Ring, FUN=sum, data=myDF2, keep.names=T, na.rm=T)
+    ### Calculate half hourly total for each ring
+    tDF <- summaryBy(Rain_mm_Tot~DateHour+Ring, FUN=sum, data=myDF2, 
+                        keep.names=T, na.rm=T)
     
-    dDF3 <- summaryBy(Rain_mm_Tot~Date, FUN=mean, data=dDF2, keep.names=T, na.rm=T)
+    precDF <- summaryBy(Rain_mm_Tot~DateHour, FUN=mean, data=tDF, keep.names=T, na.rm=T)
     
     ### merge
-    out <- merge(dDF, dDF3, by=c("Date"))
+    outDF1 <- merge(tempDF, precDF, by=c("DateHour"))
+    #######################################################################################
     
     
     
@@ -90,9 +81,19 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     
     
     
-    ### add n deposition  data for the period of 1992 to 2011
-    inDF2 <- merge(inDF, ndepDF, by=c("YEAR", "DOY"))
-    inDF2$CO2air <- NULL
+    
+    
+    #######################################################################################
+    ### read N deposition and CO2 data
+    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
+    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
+    ndepDF$elevatedCO2 <- NULL
+    ndepDF$Ndep <- ndepDF$Ndep / 10
+
+    
+    ### assign ndep data onto the outDF
+    
+    #######################################################################################
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
