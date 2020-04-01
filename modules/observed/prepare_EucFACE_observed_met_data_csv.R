@@ -69,10 +69,12 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     outDF1 <- merge(tempDF, precDF, by=c("DateHour"))
     #######################################################################################
     
+    #######################################################################################
+    ### read EucFACE data prepared by Jim Yang
+    myDF3 <- download_jimyang_data()
     
     
-    
-    
+    #
     
     
     
