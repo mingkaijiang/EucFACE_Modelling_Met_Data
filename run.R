@@ -40,25 +40,20 @@ prepare_EucFACE_spinup_met_data_csv(timestep="half_hourly")
 
 prepare_EucFACE_spinup_met_data_csv(timestep="daily")
 
-#### daily:
-prepare_EucFACE_spinup_met_data_daily_csv()
+#### nc
+#prepare_EucFACE_spinup_met_data_nc(timestep="half_hourly")
 
-prepare_EucFACE_spinup_met_data_daily_nc()
+#prepare_EucFACE_spinup_met_data_nc(timestep="daily")
 
 ###########################################################################
 #### Step 2.2. prepare historic data (1992 - 2011)
 #### weather data: recycle Martin's 1992 - 2011 weather data
 #### CO2, N and P deposition: realistic data over 1750 - 2012
 
-#### half hourly:
-###  csv:
+### csv
+prepare_EucFACE_historic_met_data_csv(timestep="half_hourly")
 
-###  nc:
-
-#### daily:
-###  csv
-
-###  nc
+prepare_EucFACE_historic_met_data_csv(timestep="daily")
 
 
 ###########################################################################
