@@ -56,7 +56,37 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     
     myDF3 <- download_r3_flux_data()
     
+    ### assign data and time information
+    myDF3$YEAR <- year(myDF3$Date)
+    myDF3$DOY <- yday(myDF3$Date)
+    myDF3$Hour <- substr(myDF3$DateTime, start=12, stop=13)
+    myDF3$HalfHour <- substr(myDF3$DateTime, start=15, stop=16)
     
+    ## ignore 2020 & 2011
+    myDF3 <- subset(myDF3, YEAR != "2020")
+    myDF3 <- subset(myDF3, YEAR != "2011")
+    
+    outDF3 <- myDF3[,c("Date", "Hour", "HalfHour",
+                        "Ts_mean", "wnd_spd", "LI190SB_PAR_Den_Avg",
+                       "TargTempC_Avg.1.", "Net_SW_Avg", "Net_LW_Avg",
+                       "Net_Rad_Avg", "Pressure_hPa_Avg")]
+    
+    outDF3$Pressure_kPa <- outDF3$Pressure_hPa_Avg / 10
+    outDF3$Pressure_Pa <- outDF3$Pressure_hPa_Avg * 100
+    
+    
+    ### merge the two datasets
+    outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
+
+    
+    #######################################################################################
+    ### CO2 concentration in the rings
+    myDF4 <- download_co2_data()
+    
+    
+    #######################################################################################
+    ### calculate VPD
+    outDF$VPD <- RHtoVPD(outDF$RH, outDF$AirTC_Avg)
     
     
     #######################################################################################

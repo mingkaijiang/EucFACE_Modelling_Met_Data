@@ -67,7 +67,8 @@ pacman::p_load(dplyr,
                viridis,
                sciplot,
                RColorBrewer,
-               ncdf4)    
+               ncdf4,
+               plantecophys)    
 
 #### Sourcing all R files in the modules subdirectory
 sourcefiles <- dir("modules", pattern="[.]R$", recursive = TRUE, full.names = TRUE)
