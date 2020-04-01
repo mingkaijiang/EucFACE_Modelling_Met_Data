@@ -1,4 +1,4 @@
-prepare_EucFACE_observed_met_data_csv <- function(timestep) {
+prepare_EucFACE_observed_met_data_csv_old <- function(timestep) {
     #### Note: prepare observed data (2012 - 2019)
  
     #######################################################################################
