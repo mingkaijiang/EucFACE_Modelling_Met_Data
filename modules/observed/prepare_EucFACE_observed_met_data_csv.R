@@ -257,11 +257,55 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     soilDF <- subset(soilDF, YEAR != "2011")
     
     ## assign half hour 
-    myDF1$HalfHour <- ifelse(myDF1$Minute > 30, "30", "00")
+    soilDF$HalfHour <- ifelse(soilDF$Minute > 30, "30", "00")
+    
+    ## average soil temperature data across replicates
+    soilDF$SoilTemp <- rowMeans(soilDF[c("T30cm_1_Avg", "T30cm_2_Avg")], na.rm=TRUE)
     
     ## half hourly rainfall data
-    outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
-                        data=myDF1, keep.names=T, na.rm=T)
+    outDF10 <- summaryBy(SoilTemp~Date+Hour+HalfHour, FUN=mean,
+                        data=soilDF, keep.names=T, na.rm=T)
+    
+    
+    outDF11 <- merge(outDF9, outDF10, by=c("Date","Hour","HalfHour"), all=T)
+    
+    ### fill SoilTemp missing values
+    myDF1$SoilTempROS <- rowMeans(myDF1[c("SoilTemp_Avg.1.", "SoilTemp_Avg.2.")], na.rm=TRUE)
+    
+    outDF12 <- summaryBy(SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=mean,
+                         data=myDF1, keep.names=T, na.rm=T)
+    
+    outDF13 <- merge(outDF11, outDF12, by=c("Date","Hour","HalfHour"), all=T)
+    
+    ## fill missing values
+    outDF13$SoilTemp <- ifelse(is.na(outDF13$SoilTemp), outDF13$ASoilTemp_Avg, outDF13$SoilTemp)
+    outDF13$SoilTempROS <- NULL
+    outDF13$ASoilTemp_Avg <- NULL
+    
+    ## order
+    outDF13 <- outDF13[order(outDF13$Date, outDF13$Hour, outDF13$HalfHour),]
+
+    ## datetime
+    outDF13$DateTime <- as.POSIXct(paste0(outDF13$Date, " ", outDF13$Hour, ":",
+                                       outDF13$HalfHour, ":00"),
+                                format = "%Y-%m-%d %H:%M:%S")
+    
+    outDF <- unique(outDF13, by="DateTime")
+    
+    #######################################################################################
+    ## create a new outDF to store all data time series
+    time.series <- seq(as.Date("2012-01-01"), as.Date("2019-12-31"), by = "day")
+    l <- length(time.series)
+    hour.series <- seq(0.5, 24, by=0.5)
+    
+    outDF$HOUR <- rep(hour.series, times=l)
+
+    ## arrange select
+    out <- outDF[,c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
+                      "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
+                      "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
+    
+    
     #######################################################################################
     
     ### generate variable name and unit list
@@ -269,18 +313,16 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
                   "CO2air", "SoilTemp", "Ndep")
     
-    colnames(inDF2) <- var.list
-    
 
     ### add unit and name list
     unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
-                   "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
+                   "Pa", "%", "m s-1", "Pa", "ppmv", "ppmv", "K", "g N m-2 yr-1")
     
     name.list <- c("year", "day", "hour", "shortwave radiation", 
                    "photosynthetically active radiation", "longwave radiation",
                    "air temperature", "rainfall", "vapor pressure deficit",
                    "relative humidity", "wind speed", "surface pressure",
-                   "CO2 concentration", "soil temperature", "nitrogen deposition")
+                   "ambient CO2", "elevated CO2", "soil temperature", "nitrogen deposition")
     
     headDF <- data.frame(rbind(name.list, unit.list))
     colnames(headDF) <- var.list
@@ -289,22 +331,22 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
     ### decide what timestep to output
     if(timestep == "half_hourly") {
 
-        write.table(headDF, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1992_2011.csv",
+        write.table(headDF, "output/observed/csv/half_hourly/EUC_met_observed_half_hourly_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(inDF2, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1992_2011.csv",
+        write.table(out, "output/observed/csv/half_hourly/EUC_met_observed_half_hourly_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
     } else if(timestep == "daily") {
         
         ### calculate total rainfall of the day
-        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=inDF2, keep.names=T)
+        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=out, keep.names=T)
         
         ### extract daytime DF
-        subDF <- subset(inDF2, PAR > 0.0)
+        subDF <- subset(out, PAR > 0.0)
         
-        dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2air+SoilTemp+Ndep~YEAR+DOY,
+        dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2ambient+CO2elevated+SoilTemp+Ndep~YEAR+DOY,
                           FUN=mean, data=subDF, keep.names=T)
     
         dDF <- merge(dDF1, dDF2, by=c("YEAR", "DOY"), all=T)
@@ -312,32 +354,32 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
         ### rearrange variables
         outDF2 <- dDF[,c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
                          "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                         "CO2air", "SoilTemp", "Ndep")]
+                         "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
         
         outDF2 <- outDF2[order(outDF2$YEAR, outDF2$DOY),]
         
         ### add unit and name list
         unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
-                       "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
+                       "Pa", "%", "m s-1", "Pa", "ppmv", "ppmv", "K", "g N m-2 yr-1")
         
         name.list <- c("year", "day", "shortwave radiation", 
                        "photosynthetically active radiation", "longwave radiation",
                        "air temperature", "rainfall", "vapor pressure deficit",
                        "relative humidity", "wind speed", "surface pressure",
-                       "CO2 concentration", "soil temperature", "nitrogen deposition")
+                       "ambient CO2", "elevated CO2", "soil temperature", "nitrogen deposition")
         
         var.list <- c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
                       "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                      "CO2air", "SoilTemp", "Ndep")
+                      "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")
         
         headDF <- data.frame(rbind(name.list, unit.list))
         colnames(headDF) <- var.list
         rownames(headDF) <- NULL
         
-        write.table(headDF, "output/historic/csv/daily/EUC_met_historic_daily_1992_2011.csv",
+        write.table(headDF, "output/observed/csv/daily/EUC_met_observed_daily_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(outDF2, "output/historic/csv/daily/EUC_met_historic_daily_1992_2011.csv",
+        write.table(outDF2, "output/observed/csv/daily/EUC_met_observed_daily_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
