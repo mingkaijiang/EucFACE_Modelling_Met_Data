@@ -88,7 +88,7 @@ prepare_EucFACE_predicted_wet_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
 
 ### dry
-prepare_EucFACE_predicted_wet_met_data_csv(timestep="half_hourly")
-prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
+prepare_EucFACE_predicted_dry_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_predicted_dry_met_data_csv(timestep="daily")
 
 ###########################################################################
