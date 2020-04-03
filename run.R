@@ -83,17 +83,12 @@ prepare_EucFACE_observed_met_data_csv(timestep="daily")
 ####             PRD_DRY_AMB_HIP: aCO2, dry, high P added
 ####             PRD_DRY_AMB_HIP: aCO2, dry, high P added
 
-### half hourly
-prepare_EucFACE_PRD_met_data_half_hourly_csv()
+### wet
+prepare_EucFACE_predicted_wet_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
 
-prepare_EucFACE_PRD_met_data_half_hourly_nc()
-
-### daily
-prepare_EucFACE_PRD_met_data_daily_csv()
-
-prepare_EucFACE_PRD_met_data_daily_nc()
-
-
-
+### dry
+prepare_EucFACE_predicted_wet_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
 
 ###########################################################################
