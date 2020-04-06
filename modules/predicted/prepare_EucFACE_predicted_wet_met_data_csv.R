@@ -2,7 +2,7 @@ prepare_EucFACE_predicted_wet_met_data_csv <- function(timestep) {
     #### Note: prepare predicted data (2020 - 2069), based on 2015 data
  
     ### add unit and name list
-    unit.list.hour <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+    unit.list.hour <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
                         "Pa", "%", "m s-1", "Pa", "ppmv", "ppmv", "K", "g N m-2 yr-1")
     
     name.list.hour <- c("year", "day", "hour", "shortwave radiation", 
@@ -15,7 +15,7 @@ prepare_EucFACE_predicted_wet_met_data_csv <- function(timestep) {
                        "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
                        "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")
     
-    unit.list.day <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+    unit.list.day <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
                         "Pa", "%", "m s-1", "Pa", "ppmv", "ppmv", "K", "g N m-2 yr-1")
     
     name.list.day <- c("year", "day", "shortwave radiation", 

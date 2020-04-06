@@ -46,6 +46,9 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     }
     
     
+    ### Rain convert unit from kg/m2/s to mm / half an hour
+    inDF$Rain <- inDF$Rain * 1800 
+    
     ### generate a random year list
     set.seed(123)
     yr.list <- sample(1992:2011, 50, replace=T)
@@ -62,7 +65,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
 
     
     ### add unit and name list
-    unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+    unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
                    "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
     
     name.list <- c("year", "day", "hour", "shortwave radiation", 
@@ -114,7 +117,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
         }
         
         ### add unit and name list
-        unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+        unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
                        "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
         
         name.list <- c("year", "day", "shortwave radiation", 

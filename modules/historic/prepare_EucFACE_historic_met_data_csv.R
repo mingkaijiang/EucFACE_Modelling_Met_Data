@@ -51,6 +51,9 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     
     colnames(inDF2) <- var.list
     
+    ### Rain convert unit from kg/m2/s to mm / half an hour
+    inDF$Rain <- inDF$Rain * 1800 
+    
     
     ### SWdown and PAR for some days are all zero, so replace these data with
     ### data from one day earlier
@@ -72,7 +75,7 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
 
     
     ### add unit and name list
-    unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+    unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
                    "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
     
     name.list <- c("year", "day", "hour", "shortwave radiation", 
@@ -116,7 +119,7 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
         outDF2 <- outDF2[order(outDF2$YEAR, outDF2$DOY),]
         
         ### add unit and name list
-        unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "kg m-2 s-1",
+        unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
                        "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
         
         name.list <- c("year", "day", "shortwave radiation", 
