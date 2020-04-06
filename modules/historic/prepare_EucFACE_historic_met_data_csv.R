@@ -16,7 +16,7 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
     ndepDF$elevatedCO2 <- NULL
     ndepDF$Ndep <- ndepDF$Ndep / 10
-    headDF <- data.frame(rbind(c("year", "doy", "ppmv", "g M m-2 yr-1"),
+    headDF <- data.frame(rbind(c("year", "doy", "ppmv", "g N m-2 yr-1"),
                                c("year", "doy", "CO2 concentration", "nitrogen deposition")))
     colnames(headDF) <- c("YEAR", "DOY", "CO2air", "Ndep")
     

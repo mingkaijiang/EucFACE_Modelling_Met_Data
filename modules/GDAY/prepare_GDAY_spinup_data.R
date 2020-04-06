@@ -36,9 +36,6 @@ prepare_GDAY_spinup_data <- function() {
     ## PSurf from Pa to Kpa
     myDF$PSurf <- myDF$PSurf / 1000
     
-    ## convert rainfall data unit from kg/m2 to mm
-    myDF$Rain <- myDF$Rain * 1000
-    
     ### calculate daily sum of rainfall
     dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=myDF, keep.names=T)
     
