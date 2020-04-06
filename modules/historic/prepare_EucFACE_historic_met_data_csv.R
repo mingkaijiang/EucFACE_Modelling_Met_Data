@@ -1,6 +1,6 @@
 prepare_EucFACE_historic_met_data_csv <- function(timestep) {
-    #### Note: prepare historic data (1992 - 2011)
-    #### based on Medlyn 2016 paper equilbrium data (50 year)
+    #### Note: prepare historic data (1750 - 2011)
+    #### based on Medlyn 2016 paper equilbrium data (20 year)
     
     ### read input 
     inDF <- read.csv("tmp_data/EucFACE_forcing_1992-2011.csv",header=T)
@@ -10,50 +10,15 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     ### ignore Qair - near surface specific humidity
     inDF$Qair..kg.kg. <- NULL
     
-    #######################################################################################
-    ### read N deposition and CO2 data
-    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
-    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
-    ndepDF$elevatedCO2 <- NULL
-    ndepDF$Ndep <- ndepDF$Ndep / 10
-    headDF <- data.frame(rbind(c("year", "doy", "ppmv", "g N m-2 yr-1"),
-                               c("year", "doy", "CO2 concentration", "nitrogen deposition")))
-    colnames(headDF) <- c("YEAR", "DOY", "CO2air", "Ndep")
-    
-    ### create separate daily files for ndep and CO2
-    ### for the period of 1750 - 1991
-    ndepDF.out <- subset(ndepDF, YEAR <= 1991)
-    
-    
-    ### half hourly
-    write.table(headDF, "output/historic/csv/half_hourly/EUC_met_1750_1991_Ndep_CO2.csv",
-                col.names=T, row.names=F, sep=",", append=F, quote = F)
-    
-    write.table(ndepDF.out, "output/historic/csv/half_hourly/EUC_met_1750_1991_Ndep_CO2.csv",
-                col.names=F, row.names=F, sep=",", append=T, quote = F)
-    
-    ### daily
-    write.table(headDF, "output/historic/csv/daily/EUC_met_1750_1991_Ndep_CO2.csv",
-                col.names=T, row.names=F, sep=",", append=F, quote = F)
-    
-    write.table(ndepDF.out, "output/historic/csv/daily/EUC_met_1750_1991_Ndep_CO2.csv",
-                col.names=F, row.names=F, sep=",", append=T, quote = F)
-    #######################################################################################
-    
-    ### add n deposition  data for the period of 1992 to 2011
-    inDF2 <- merge(inDF, ndepDF, by=c("YEAR", "DOY"))
-    inDF2$CO2air <- NULL
-    
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp", "Ndep")
+                  "CO2air", "SoilTemp")
     
-    colnames(inDF2) <- var.list
+    colnames(inDF) <- var.list
     
     ### Rain convert unit from kg/m2/s to mm / half an hour
     inDF$Rain <- inDF$Rain * 1800 
-    
     
     ### SWdown and PAR for some days are all zero, so replace these data with
     ### data from one day earlier
@@ -68,11 +33,46 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     for (i in missing.data.list$YEAR) {
         for (j in missing.data.list$DOY) {
             k <- as.numeric(j) - 1
-            inDF2[inDF2$YEAR==i&inDF2$DOY==j, "SWdown"] <- inDF2[inDF2$YEAR==i&inDF2$DOY==k, "SWdown"]
-            inDF2[inDF2$YEAR==i&inDF2$DOY==j, "PAR"] <- inDF2[inDF2$YEAR==i&inDF2$DOY==k, "PAR"]
+            inDF[inDF$YEAR==i&inDF$DOY==j, "SWdown"] <- inDF[inDF$YEAR==i&inDF$DOY==k, "SWdown"]
+            inDF[inDF$YEAR==i&inDF$DOY==j, "PAR"] <- inDF[inDF$YEAR==i&inDF$DOY==k, "PAR"]
         }
     }
+    
+    ## exclude day 366
+    inDF <- subset(inDF, DOY <= 365)
+    
+    ### generate a random year list of 262 years
+    set.seed(123)
+    yr.list <- sample(1992:2011, 262, replace=T)
+    
+    ### prepare output DF
+    outDF <- c()
+    
+    ### loop through random years to create the equilibrium dataset
+    for (i in yr.list) {
+        tmpDF <- subset(inDF, YEAR == i)
+        
+        outDF <- rbind(outDF, tmpDF)
+    }
+    
+    ### set year in 1750 - 2011
+    new.year.list <- rep(c(1750:2011), each = (365 * 48))
+    outDF$YEAR <- new.year.list
+    
+    #######################################################################################
+    ### read N deposition and CO2 data
+    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
+    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
+    ndepDF$elevatedCO2 <- NULL
+    
+    ### convert unit to g N m-2 yr-1
+    ndepDF$Ndep <- ndepDF$Ndep / 10
 
+    #######################################################################################
+    ### add n deposition  data for the period of 1992 to 2011
+    outDF2 <- merge(outDF, ndepDF, by=c("YEAR", "DOY"))
+    outDF2$CO2air.x <- NULL
+    names(outDF2)[names(outDF2) == 'CO2air.y'] <- "CO2air"
     
     ### add unit and name list
     unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
@@ -88,23 +88,24 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     colnames(headDF) <- var.list
     rownames(headDF) <- NULL
     
+    
     ### decide what timestep to output
     if(timestep == "half_hourly") {
 
-        write.table(headDF, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1992_2011.csv",
+        write.table(headDF, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(inDF2, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1992_2011.csv",
+        write.table(outDF2, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
     } else if(timestep == "daily") {
         
         ### calculate total rainfall of the day
-        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=inDF2, keep.names=T)
+        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=outDF2, keep.names=T)
         
         ### extract daytime DF
-        subDF <- subset(inDF2, PAR > 0.0)
+        subDF <- subset(outDF2, PAR > 0.0)
         
         dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2air+SoilTemp+Ndep~YEAR+DOY,
                           FUN=mean, data=subDF, keep.names=T)
@@ -136,10 +137,10 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
         colnames(headDF) <- var.list
         rownames(headDF) <- NULL
         
-        write.table(headDF, "output/historic/csv/daily/EUC_met_historic_daily_1992_2011.csv",
+        write.table(headDF, "output/historic/csv/daily/EUC_met_historic_daily_1750_2011.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(outDF2, "output/historic/csv/daily/EUC_met_historic_daily_1992_2011.csv",
+        write.table(outDF2, "output/historic/csv/daily/EUC_met_historic_daily_1750_2011.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
