@@ -46,7 +46,7 @@ prepare_EucFACE_predicted_wet_met_data_csv <- function(timestep) {
         
         
         ### read input
-        myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_half_hourly_2012_2019.csv",
+        myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv",
                          skip=3, header=F)
         colnames(myDF) <- var.list.hour
         
@@ -76,7 +76,7 @@ prepare_EucFACE_predicted_wet_met_data_csv <- function(timestep) {
         
         
         ### read input
-        myDF <- read.csv("output/observed/csv/daily/EUC_met_observed_daily_2012_2019.csv",
+        myDF <- read.csv("output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
                          skip=3, header=F)
         colnames(myDF) <- var.list.day
         
