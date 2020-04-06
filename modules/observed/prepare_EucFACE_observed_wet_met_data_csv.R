@@ -73,6 +73,8 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         ### new year list
         yr.list2 <- rep(c(2020:2069), each=365)
         
+        colnames(myDF) <- var.list
+        
         ### prepare output DF
         subDF <- subset(myDF, YEAR==2015)
         
