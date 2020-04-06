@@ -4,7 +4,7 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
     
     ### decide what timestep to output
     if(timestep == "half_hourly") {
-        myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv", 
+        myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv", 
                          skip=3, header=F)
         
         
@@ -40,16 +40,16 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         colnames(headDF) <- var.list
         rownames(headDF) <- NULL
         
-        write.table(headDF, "output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv",
+        write.table(headDF, "output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(outDF, "output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv",
+        write.table(outDF, "output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
         
     } else if(timestep == "daily") {
-        myDF <- read.csv("output/observed/csv/daily/EUC_met_observed_wet_daily_2012_2019.csv", 
+        myDF <- read.csv("output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv", 
                          skip=3, header=F)
         
         ### add unit and name list
