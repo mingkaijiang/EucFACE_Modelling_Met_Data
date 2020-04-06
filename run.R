@@ -92,3 +92,12 @@ prepare_EucFACE_predicted_dry_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_predicted_dry_met_data_csv(timestep="daily")
 
 ###########################################################################
+###                     Step 3: GDAY input format                       ###
+###                                                                     ###
+###########################################################################
+##### Prepare all half-hourly data in GDAY input format
+##### Will do it for each period of data separately
+###########################################################################
+#### prepare GDAY spinup data
+prepare_GDAY_spinup_data()
+

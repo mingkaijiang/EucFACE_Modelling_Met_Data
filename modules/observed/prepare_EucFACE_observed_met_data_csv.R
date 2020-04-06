@@ -192,7 +192,7 @@ prepare_EucFACE_observed_met_data_csv <- function(timestep) {
                           "CO2elevated")
     
     ### calculate VPD
-    outDF9$VPD <- RHtoVPD(outDF9$RH, outDF9$Tair)
+    outDF9$VPD <- RHtoVPD(outDF9$RH, outDF9$Tair) * 1000
     
     ## add additional variables
     outDF9$YEAR <- year(outDF9$Date)
