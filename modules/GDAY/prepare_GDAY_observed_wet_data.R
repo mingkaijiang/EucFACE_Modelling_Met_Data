@@ -1,4 +1,4 @@
-prepare_GDAY_observed_dry_data <- function() {
+prepare_GDAY_observed_wet_data <- function() {
     #### read half-hourly data and output daily data 
     #### in the GDAY format and unit
     
@@ -20,7 +20,7 @@ prepare_GDAY_observed_dry_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv", skip=3)
+    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv", skip=3)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
@@ -142,31 +142,31 @@ prepare_GDAY_observed_dry_data <- function() {
     
     
     ### output
-    write.table(head.list, "output/GDAY/EUC_met_DRY_AMB_daily_2012_2019.csv",
+    write.table(head.list, "output/GDAY/EUC_met_WET_AMB_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_DRY_AMB_daily_2012_2019.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_WET_AMB_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_DRY_AMB_daily_2012_2019.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_WET_AMB_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF1, "output/GDAY/EUC_met_DRY_AMB_daily_2012_2019.csv",
+    write.table(outDF1, "output/GDAY/EUC_met_WET_AMB_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
     
     ### output
-    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_daily_2012_2019.csv",
+    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_daily_2012_2019.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_daily_2012_2019.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF2, "output/GDAY/EUC_met_DRY_ELE_daily_2012_2019.csv",
+    write.table(outDF2, "output/GDAY/EUC_met_WET_ELE_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
 }

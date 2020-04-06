@@ -116,6 +116,25 @@ prepare_GDAY_historic_data()
 ### AMB: ambient CO2; WET: repeated wet year climate
 ### ELE: elevated CO2; WET: repeated wet year climate
 prepare_GDAY_observed_dry_data()
-
 prepare_GDAY_observed_wet_data()
+
+
+#### prepare GDAY predicted data (2020 - 2069)
+#### under 12 scenarios
+### AMB: ambient CO2; DRY: realistic climate, NOP: no P addition
+### ELE: elevated CO2; DRY: realistic climate, NOP: no P addition
+### AMB: ambient CO2; WET: repeated wet year climate, NOP: no P addition
+### ELE: elevated CO2; WET: repeated wet year climate, NOP: no P addition
+
+### AMB: ambient CO2; DRY: realistic climate, MDP: medium P addition
+### ELE: elevated CO2; DRY: realistic climate, MDP: medium P addition
+### AMB: ambient CO2; WET: repeated wet year climate, MDP: medium P addition
+### ELE: elevated CO2; WET: repeated wet year climate, MDP: medium P addition
+
+### AMB: ambient CO2; DRY: realistic climate, HIP: high P addition
+### ELE: elevated CO2; DRY: realistic climate, HIP: high P addition
+### AMB: ambient CO2; WET: repeated wet year climate, HIP: high P addition
+### ELE: elevated CO2; WET: repeated wet year climate, HIP: high P addition
+prepare_GDAY_predicted_dry_data()
+prepare_GDAY_predicted_wet_data()
 
