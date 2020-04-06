@@ -1,4 +1,4 @@
-prepare_GDAY_observed_data <- function() {
+prepare_GDAY_observed_dry_data <- function() {
     #### read half-hourly data and output daily data 
     #### in the GDAY format and unit
     
@@ -20,12 +20,12 @@ prepare_GDAY_observed_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_half_hourly_1750_2011.csv", skip=3)
+    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_half_hourly_2012_2019.csv", skip=3)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp", "Ndep")
+                  "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")
     
     colnames(myDF) <- var.list
     
@@ -60,7 +60,7 @@ prepare_GDAY_observed_data <- function() {
     colnames(dDF3) <- c("YEAR", "DOY", "Tpm", "VPD_pm", "Wind_pm")
     
     ### calculate daytime means
-    dDF4 <- summaryBy(Tair+SoilTemp+CO2air+Ndep+Wind+PSurf~YEAR+DOY, FUN=mean, 
+    dDF4 <- summaryBy(Tair+SoilTemp+CO2ambient+CO2elevated+Ndep+Wind+PSurf~YEAR+DOY, FUN=mean, 
                       data=subDF, keep.names=T, na.rm=T)
     names(dDF4)[names(dDF4) == 'Tair'] <- "Tday"
     
@@ -99,7 +99,7 @@ prepare_GDAY_observed_data <- function() {
     
     dDF <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                   "Tam", "Tpm", "Tair.min", "Tair.max",
-                  "Tday", "VPD_am", "VPD_pm", "CO2air",
+                  "Tday", "VPD_am", "VPD_pm", "CO2ambient", "CO2elevated",
                   "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
                   "Wind_pm", "PAR_am", "PAR_pm")]
     
@@ -119,6 +119,15 @@ prepare_GDAY_observed_data <- function() {
     dDF <- subset(dDF, DOY <= 365)
     
     dDF <- dDF[order(dDF$YEAR, dDF$DOY),]
+    
+    
+    ### split into 2 outputs
+
+    ## outDF1: ambient CO2, dry climate
+    
+    ## outDF2: elevated CO2, dry climate
+    
+    
     
     ### output
     write.table(head.list, "output/GDAY/EUC_met_observed_daily_2012_2019.csv",
