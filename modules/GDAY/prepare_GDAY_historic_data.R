@@ -1,4 +1,4 @@
-prepare_GDAY_spinup_data <- function() {
+prepare_GDAY_historic_data <- function() {
     #### read half-hourly data and output daily data 
     #### in the GDAY format and unit
     
@@ -15,12 +15,12 @@ prepare_GDAY_spinup_data <- function() {
     
     ### add column headers
     head.list <- rbind("#EUC daily met forcing",
-                       "#Data for spin-up",
+                       "#Data for 1750 to 2011",
                        paste0("#Created by Mingkai Jiang: ", Sys.Date()))
     
     
     ### read in data
-    myDF <- read.csv("output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv", skip=3)
+    myDF <- read.csv("output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv", skip=3)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
