@@ -311,7 +311,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp", "Ndep")
+                  "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")
     
 
     ### add unit and name list

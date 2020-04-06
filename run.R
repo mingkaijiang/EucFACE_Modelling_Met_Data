@@ -60,11 +60,13 @@ prepare_EucFACE_historic_met_data_csv(timestep="daily")
 ####             OBS_DRY_AMB_NOP: aCO2, dry (realistic weather)
 ####             OBS_DRY_ELE_NOP: eCO2, dry (realsitic weather)
 
-#### csv
+#### dry
 prepare_EucFACE_observed_dry_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_observed_dry_met_data_csv(timestep="daily")
 
-
+#### wet
+prepare_EucFACE_observed_wet_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_observed_wet_met_data_csv(timestep="daily")
 
 ###########################################################################
 #### Step 2.3. Prepare 50-year future prediction data
@@ -84,13 +86,14 @@ prepare_EucFACE_observed_dry_met_data_csv(timestep="daily")
 ####             PRD_DRY_AMB_HIP: aCO2, dry, high P added
 ####             PRD_DRY_AMB_HIP: aCO2, dry, high P added
 
+### dry
+prepare_EucFACE_predicted_dry_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_predicted_dry_met_data_csv(timestep="daily")
+
 ### wet
 prepare_EucFACE_predicted_wet_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
 
-### dry
-prepare_EucFACE_predicted_dry_met_data_csv(timestep="half_hourly")
-prepare_EucFACE_predicted_dry_met_data_csv(timestep="daily")
 
 ###########################################################################
 ###                     Step 3: GDAY input format                       ###
