@@ -1,4 +1,4 @@
-prepare_GDAY_historic_data <- function() {
+prepare_GDAY_observed_data <- function() {
     #### read half-hourly data and output daily data 
     #### in the GDAY format and unit
     
@@ -15,12 +15,12 @@ prepare_GDAY_historic_data <- function() {
     
     ### add column headers
     head.list <- rbind("#EUC daily met forcing",
-                       "#Data for 1750 to 2011",
+                       "#Data for 2012 to 2019",
                        paste0("#Created by Mingkai Jiang: ", Sys.Date()))
     
     
     ### read in data
-    myDF <- read.csv("output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv", skip=3)
+    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_half_hourly_1750_2011.csv", skip=3)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
@@ -121,16 +121,16 @@ prepare_GDAY_historic_data <- function() {
     dDF <- dDF[order(dDF$YEAR, dDF$DOY),]
     
     ### output
-    write.table(head.list, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
+    write.table(head.list, "output/GDAY/EUC_met_observed_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_observed_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_observed_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(dDF, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
+    write.table(dDF, "output/GDAY/EUC_met_observed_daily_2012_2019.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     

@@ -96,7 +96,18 @@ prepare_EucFACE_predicted_dry_met_data_csv(timestep="daily")
 ###########################################################################
 ##### Prepare all half-hourly data in GDAY input format
 ##### Will do it for each period of data separately
+### all output at daily timestep
 ###########################################################################
 #### prepare GDAY spinup data
 prepare_GDAY_spinup_data()
 
+#### prepare GDAY historic data (1750 to 2011)
+prepare_GDAY_historic_data()
+
+#### prepare GDAY observed data (2012 - 2019)
+#### under 4 scenarios
+### AMB: ambient CO2; DRY: realistic climate
+### ELE: elevated CO2; DRY: realistic climate
+### AMB: ambient CO2; WET: repeated wet year climate
+### ELE: elevated CO2; WET: repeated wet year climate
+prepare_GDAY_observed_data()
