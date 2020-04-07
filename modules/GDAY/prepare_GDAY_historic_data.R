@@ -10,7 +10,7 @@ prepare_GDAY_historic_data <- function() {
     
     ### add unit and name list
     unit.list <- cbind("#-", "-", "c", "mm", "c", "c", "c", "c", "c", "c",
-                       "kPa", "kPa", "ppm", "t/ha/year", "t/ha/year", "t/ha/year",
+                       "kPa", "kPa", "ppm", "t/ha/day", "t/ha/day", "t/ha/day",
                        "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
     
     ### add column headers
@@ -97,6 +97,10 @@ prepare_GDAY_historic_data <- function() {
     dDF$Nfix <- 0.0
     dDF$Pdep <- 0.0000093 * 100 # g P m-2 yr-1
     
+    ### convert Ndep and Pdep from g P m-2 yr-1 to g P m-2 d-1
+    dDF$Ndep <- dDF$Ndep / 365
+    dDF$Pdep <- dDF$Pdep / 365
+    
     dDF <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                   "Tam", "Tpm", "Tair.min", "Tair.max",
                   "Tday", "VPD_am", "VPD_pm", "CO2air",
@@ -112,6 +116,7 @@ prepare_GDAY_historic_data <- function() {
     dDF$Tam <- dDF$Tam - 273.15
     dDF$Tpm <- dDF$Tpm - 273.15
     
+    ## convert Ndep and Pdep from g m-2 d-1 to t ha-1 d-1
     dDF$Ndep <- dDF$Ndep / 100
     dDF$Pdep <- dDF$Pdep / 100
     

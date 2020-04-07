@@ -13,8 +13,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     ### add pre-industrial N deposition 
     ### 2.25 kg N ha-1 yr-1
     ### equivalent to: 0.225 g N m-2 yr-1
-    ### 
-    inDF$Ndep <- 0.225
+    inDF$Ndep <- 0.225 / 365
 
     
     ### generate variable name and unit list
