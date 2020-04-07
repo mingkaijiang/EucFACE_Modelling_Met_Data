@@ -205,16 +205,16 @@ prepare_GDAY_predicted_dry_data <- function() {
     
     
     ### output DF3
-    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_AMB_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_AMB_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_AMB_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF3, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
+    write.table(outDF3, "output/GDAY/EUC_met_DRY_AMB_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
@@ -233,16 +233,16 @@ prepare_GDAY_predicted_dry_data <- function() {
     
     
     ### output DF5
-    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_AMB_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_AMB_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_AMB_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF5, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
+    write.table(outDF5, "output/GDAY/EUC_met_DRY_AMB_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     ### output DF6
