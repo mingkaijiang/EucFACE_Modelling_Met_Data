@@ -133,12 +133,12 @@ prepare_GDAY_observed_dry_data <- function() {
     
     
     ## outDF2: elevated CO2, dry climate
-    outDF1 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
+    outDF2 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2elevated", 
                      "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
                      "Wind_pm", "PAR_am", "PAR_pm")]
-    names(outDF1)[names(outDF1) == 'CO2elevated'] <- "CO2air"
+    names(outDF2)[names(outDF2) == 'CO2elevated'] <- "CO2air"
     
     
     ### output
