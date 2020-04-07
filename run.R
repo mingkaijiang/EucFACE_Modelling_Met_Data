@@ -138,3 +138,9 @@ prepare_GDAY_observed_wet_data()
 prepare_GDAY_predicted_dry_data()
 prepare_GDAY_predicted_wet_data()
 
+###########################################################################
+#### move all GDAY met files to the simulation folder
+move_all_met_data_into_GDAY_simulation_folders()
+
+
+###########################################################################
