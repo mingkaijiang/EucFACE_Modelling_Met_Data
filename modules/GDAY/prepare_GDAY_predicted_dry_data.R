@@ -1,4 +1,4 @@
-prepare_GDAY_predicted_wet_data <- function() {
+prepare_GDAY_predicted_dry_data <- function() {
     #### read half-hourly data and output daily data 
     #### in the GDAY format and unit
     
@@ -20,7 +20,7 @@ prepare_GDAY_predicted_wet_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/predicted/csv/half_hourly/EUC_predicted_wet_met_half_hourly_2020_2069.csv", skip=3)
+    myDF <- read.csv("output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv", skip=3)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
@@ -128,7 +128,7 @@ prepare_GDAY_predicted_wet_data <- function() {
     
     ### split into 6 outputs
 
-    ## outDF1: ambient CO2, wet climate, no P addition
+    ## outDF1: ambient CO2, dry climate, no P addition
     outDF1 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2ambient", 
@@ -137,7 +137,7 @@ prepare_GDAY_predicted_wet_data <- function() {
     names(outDF1)[names(outDF1) == 'CO2ambient'] <- "CO2air"
     
     
-    ## outDF2: elevated CO2, wet climate, no P addition
+    ## outDF2: elevated CO2, dry climate, no P addition
     outDF2 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2elevated", 
@@ -147,28 +147,28 @@ prepare_GDAY_predicted_wet_data <- function() {
     
     
     
-    ## outDF3: ambient CO2, wet climate, middle P addition
+    ## outDF3: ambient CO2, dry climate, middle P addition
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF3 <- outDF1
     outDF3$Pdep[outDF3$YEAR%in%c("2020","2021","2022")&outDF3$DOY=="1"] <- (0.5 / 100)+
         outDF3$Pdep[outDF3$YEAR=="2020"&outDF3$DOY=="1"]
     
-    ## outDF4: elevated CO2, wet climate, middle P addition
+    ## outDF4: elevated CO2, dry climate, middle P addition
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF4 <- outDF2
     outDF4$Pdep[outDF4$YEAR%in%c("2020","2021","2022")&outDF4$DOY=="1"] <- (0.5 / 100)+
         outDF4$Pdep[outDF4$YEAR=="2020"&outDF4$DOY=="1"]
     
-    ## outDF5: ambient CO2, wet climate, high P addition
+    ## outDF5: ambient CO2, dry climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF5 <- outDF1
     outDF5$Pdep[outDF5$YEAR%in%c("2020","2021","2022")&outDF5$DOY=="1"] <- (1.0 / 100)+
         outDF5$Pdep[outDF5$YEAR=="2020"&outDF5$DOY=="1"]
     
-    ## outDF6: elevated CO2, wet climate, high P addition
+    ## outDF6: elevated CO2, dry climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF6 <- outDF2
@@ -176,86 +176,86 @@ prepare_GDAY_predicted_wet_data <- function() {
         outDF6$Pdep[outDF6$YEAR=="2020"&outDF6$DOY=="1"]
     
     ### output DF 1
-    write.table(head.list, "output/GDAY/EUC_met_WET_AMB_NOP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_AMB_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_AMB_NOP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_AMB_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_AMB_NOP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_AMB_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF1, "output/GDAY/EUC_met_WET_AMB_NOP_daily_2020_2069.csv",
+    write.table(outDF1, "output/GDAY/EUC_met_DRY_AMB_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
     
     ### output DF2
-    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_NOP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_NOP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_NOP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF2, "output/GDAY/EUC_met_WET_ELE_NOP_daily_2020_2069.csv",
+    write.table(outDF2, "output/GDAY/EUC_met_DRY_ELE_NOP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
     ### output DF3
-    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF3, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(outDF3, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
     ### output DF4
-    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF4, "output/GDAY/EUC_met_WET_ELE_MDP_daily_2020_2069.csv",
+    write.table(outDF4, "output/GDAY/EUC_met_DRY_ELE_MDP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
     ### output DF5
-    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF5, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(outDF5, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     ### output DF6
-    write.table(head.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(head.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF6, "output/GDAY/EUC_met_WET_ELE_HIP_daily_2020_2069.csv",
+    write.table(outDF6, "output/GDAY/EUC_met_DRY_ELE_HIP_daily_2020_2069.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
 }
