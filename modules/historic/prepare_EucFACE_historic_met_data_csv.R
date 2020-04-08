@@ -74,6 +74,11 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     outDF2$CO2air.x <- NULL
     names(outDF2)[names(outDF2) == 'CO2air.y'] <- "CO2air"
     
+    
+    outDF2 <- outDF2[,c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
+                        "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
+                        "CO2air", "SoilTemp", "Ndep")]
+    
     ### add unit and name list
     unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
                    "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")

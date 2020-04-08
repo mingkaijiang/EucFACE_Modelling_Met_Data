@@ -1,6 +1,6 @@
 check_GDAY_met_data_quality <- function()  {
     ### read in files
-    spinDF <- read.csv("output/GDAY/EUC_met_spinup_daily_20yrs.csv", skip=4)
+    spinDF <- read.csv("output/GDAY/EUC_met_spinup_daily_50yrs.csv", skip=4)
     names(spinDF)[names(spinDF) == 'X.year'] <- "year"
     
     histDF <- read.csv("output/GDAY/EUC_met_historic_daily_1750_2011.csv", skip=4)
@@ -12,8 +12,6 @@ check_GDAY_met_data_quality <- function()  {
     obsDF.eCO2 <- read.csv("output/GDAY/EUC_met_DRY_ELE_daily_2012_2019.csv", skip=4)
     names(obsDF.eCO2)[names(obsDF.eCO2) == 'X.year'] <- "year"
     
-    ### rename years
-    spinDF$year <- rep(c(1730:1749), each=365)
     
     ## check annual values, for spinup and hist dataframes
     tDF1 <- rbind(spinDF, histDF)
@@ -29,6 +27,6 @@ check_GDAY_met_data_quality <- function()  {
     dev.off()
     
     ### problem data variable
-    ### rain, tsoil, CO2, par_am, par_pm
+    ### tsoil, CO2
     
 }

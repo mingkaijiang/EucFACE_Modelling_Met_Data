@@ -132,16 +132,16 @@ prepare_GDAY_spinup_data <- function() {
     dDF <- dDF[order(dDF$YEAR, dDF$DOY),]
     
     ### output
-    write.table(head.list, "output/GDAY/EUC_met_spinup_daily_20yrs.csv",
+    write.table(head.list, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",
                 col.names=F, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(unit.list, "output/GDAY/EUC_met_spinup_daily_20yrs.csv",
+    write.table(unit.list, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outname.list, "output/GDAY/EUC_met_spinup_daily_20yrs.csv",
+    write.table(outname.list, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(dDF, "output/GDAY/EUC_met_spinup_daily_20yrs.csv",
+    write.table(dDF, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     
