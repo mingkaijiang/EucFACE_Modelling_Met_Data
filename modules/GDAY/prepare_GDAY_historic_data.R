@@ -20,7 +20,8 @@ prepare_GDAY_historic_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv", skip=3)
+    myDF <- read.csv("output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv", 
+                     skip=3, header=F)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",

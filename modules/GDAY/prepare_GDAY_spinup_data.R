@@ -20,7 +20,8 @@ prepare_GDAY_spinup_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv", skip=3)
+    myDF <- read.csv("output/spinup/csv/half_hourly/EUC_met_spinup_half_hourly_50yrs.csv", 
+                     skip=3, header=F)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
@@ -40,6 +41,10 @@ prepare_GDAY_spinup_data <- function() {
     ## 1 W m-2 = 4.6 umol m-2 s-1
     ## 1 MJ s-1 = 1e6 W
     myDF$PAR <- myDF$PAR / 4.6 * 1e-6 * 1800
+    
+    ## remove leap year and keep only 20 years of data
+    myDF <- subset(myDF, DOY <= 365)
+    myDF$YEAR <- rep(c(1700:1749), each=(365*48))
     
     
     ### calculate daily sum of rainfall
@@ -73,7 +78,7 @@ prepare_GDAY_spinup_data <- function() {
     dDF6 <- summaryBy(Tair~YEAR+DOY, FUN=c(min, max),
                      data=subDF, keep.names=T, na.rm=T)
     
-    ## PAR for morining and afternoons
+    ## PAR for morning and afternoons
     dDF7 <- summaryBy(PAR~YEAR+DOY, FUN=sum,
                       data=subDF.am, keep.names=T, na.rm=T)
     names(dDF7)[names(dDF7) == 'PAR'] <- "PAR_am"

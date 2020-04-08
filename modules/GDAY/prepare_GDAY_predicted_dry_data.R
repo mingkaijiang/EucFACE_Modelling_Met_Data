@@ -20,7 +20,8 @@ prepare_GDAY_predicted_dry_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv", skip=3)
+    myDF <- read.csv("output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv", 
+                     skip=3, header=F)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",

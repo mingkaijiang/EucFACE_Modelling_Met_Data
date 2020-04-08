@@ -33,7 +33,8 @@ output.folders <- c("output",
                     "output/predicted/csv/half_hourly",
                     #"output/predicted/netcdf/daily",
                     #"output/predicted/netcdf/half_hourly",
-                    "output/GDAY")
+                    "output/GDAY",
+                    "output/GDAY/quality_check")
 
 #### Create output folder
 for (y in output.folders) {

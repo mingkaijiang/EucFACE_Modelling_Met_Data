@@ -20,7 +20,8 @@ prepare_GDAY_observed_wet_data <- function() {
     
     
     ### read in data
-    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv", skip=3)
+    myDF <- read.csv("output/observed/csv/half_hourly/EUC_met_observed_wet_half_hourly_2012_2019.csv", 
+                     skip=3, header=F)
     
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
