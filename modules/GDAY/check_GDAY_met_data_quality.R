@@ -20,13 +20,36 @@ check_GDAY_met_data_quality <- function()  {
     ## number of columns
     n <- dim(tDF2)[2]
     
-    pdf("output/GDAY/quality_check/spin_up_historic_check.pdf")
+    #pdf("output/GDAY/quality_check/spin_up_historic_check.pdf")
+    #for (i in 3:n) {
+    #    plot(tDF2[,i]~tDF2$year)
+    #}
+    #dev.off()
+    
+    ### check obs dataset
+    tDF2 <- rbind(tDF1, obsDF.aCO2)
+    tDF3 <- summaryBy(.~year, FUN=mean, keep.names=T, na.rm=T, data=tDF2)
+    
+    ## number of columns
+    n <- dim(tDF3)[2]
+    
+    pdf("output/GDAY/quality_check/historic_obseved_check.pdf")
     for (i in 3:n) {
-        plot(tDF2[,i]~tDF2$year)
+        plot(tDF3[,i]~tDF3$year)
     }
     dev.off()
     
-    ### problem data variable
-    ### tsoil, CO2
+    ## problem variable: tsoil - negative values
+    ##                   tam - 2 degree less
+    ##                   tpm - 2 degree less
+    ##                   tday - 2 degree less
+    ##                   vpd_am - small
+    ##                   vpd_pm - small
+    ##                   wind - small
+    ##                   pres: variable
+    ##                   wind_am - small
+    ##                   wind_pm - small
+    ##                   par_am - small
+    ##                   par_pm - small
     
 }

@@ -305,6 +305,9 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
                       "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
                       "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
     
+    ## soilTemp convert to K
+    out$SoilTemp <- outDF$SoilTemp + 273.15
+    
     
     #######################################################################################
     

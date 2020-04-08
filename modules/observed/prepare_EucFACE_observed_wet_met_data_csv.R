@@ -18,10 +18,10 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         ### which year is wettest?
         subDF <- subset(myDF, YEAR==2015)
         
-        outDF <- do.call("rbind", replicate(50, subDF, simplify = FALSE))
+        outDF <- do.call("rbind", replicate(8, subDF, simplify = FALSE))
         
         ### new year list
-        yr.list2 <- rep(c(2020:2069), each=(48*365))
+        yr.list2 <- rep(c(2012:2019), each=(48*365))
         
         ### assign new year list
         outDF$YEAR <- yr.list2
@@ -71,14 +71,14 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         rownames(headDF) <- NULL
         
         ### new year list
-        yr.list2 <- rep(c(2020:2069), each=365)
+        yr.list2 <- rep(c(2012:2019), each=365)
         
         colnames(myDF) <- var.list
         
         ### prepare output DF
         subDF <- subset(myDF, YEAR==2015)
         
-        outDF <- do.call("rbind", replicate(50, subDF, simplify = FALSE))
+        outDF <- do.call("rbind", replicate(8, subDF, simplify = FALSE))
         
         ### assign new year list
         outDF$YEAR <- yr.list2
