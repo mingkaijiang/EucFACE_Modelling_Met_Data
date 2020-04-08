@@ -39,8 +39,7 @@ check_GDAY_met_data_quality <- function()  {
     }
     dev.off()
     
-    ## problem variable: tsoil - negative values
-    ##                   tam - 2 degree less
+    ## problem variable: tam - 2 degree less
     ##                   tpm - 2 degree less
     ##                   tday - 2 degree less
     ##                   vpd_am - small
