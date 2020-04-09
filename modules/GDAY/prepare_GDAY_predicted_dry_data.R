@@ -96,7 +96,7 @@ prepare_GDAY_predicted_dry_data <- function() {
     
     ### add nfix and pdep
     dDF$Nfix <- 0.0
-    dDF$Pdep <- 0.0000093 * 100 # g P m-2 yr-1
+    dDF$Pdep <- 0.000093 * 100 # g P m-2 yr-1
     
     ### convert Ndep and Pdep from g P m-2 yr-1 to g P m-2 d-1
     dDF$Ndep <- dDF$Ndep / 365

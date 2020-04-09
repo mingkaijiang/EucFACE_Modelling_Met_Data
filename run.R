@@ -143,7 +143,7 @@ prepare_GDAY_predicted_wet_data()
 ###                                                                     ###
 ###########################################################################
 #### check data quality
-check_met_data_quality()
+#check_met_data_quality()
 
 #### move all GDAY met files to the simulation folder
 move_all_met_data_into_GDAY_simulation_folders()
