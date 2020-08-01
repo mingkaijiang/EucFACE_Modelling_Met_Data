@@ -3,50 +3,13 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
  
     #######################################################################################
     ### ROS station rainfall (and soil temperature, volumetric soil water content) data
-    myDF1 <- download_ros_table15_data()
-    
-    ### assign data and time information
-    myDF1$YEAR <- year(myDF1$Date)
-    myDF1$Month <- month(myDF1$Date)
-    myDF1$DOY <- yday(myDF1$Date)
-    myDF1$Hour <- substr(myDF1$DateTime, start=12, stop=13)
-    myDF1$Minute <- substr(myDF1$DateTime, start=15, stop=16)
-    
-    ## ignore 2020 & 2011
-    myDF1 <- subset(myDF1, YEAR != "2020")
-    myDF1 <- subset(myDF1, YEAR != "2011")
-    
-    ## assign half hour 
-    myDF1$HalfHour <- ifelse(myDF1$Minute > 30, "30", "00")
-    
     ## half hourly rainfall data
-    outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
-                        data=myDF1, keep.names=T, na.rm=T)
-    
-    #######################################################################################
+    outDF1 <- prepare_ros_table15_data()
     
     #######################################################################################
     ### ROS station radiation, wind speed, air temperature, humidity at 5 min interval
-    myDF2 <- download_ros_table05_data()
-    
-    ### assign data and time information
-    myDF2$YEAR <- year(myDF2$Date)
-    myDF2$Month <- month(myDF2$Date)
-    myDF2$DOY <- yday(myDF2$Date)
-    myDF2$Hour <- substr(myDF2$DateTime, start=12, stop=13)
-    myDF2$Minute <- substr(myDF2$DateTime, start=15, stop=16)
-    
-    ## ignore 2020 & 2011
-    myDF2 <- subset(myDF2, YEAR != "2020")
-    myDF2 <- subset(myDF2, YEAR != "2011")
-    
-    ## assign half hour 
-    myDF2$HalfHour <- ifelse(myDF2$Minute > 30, "30", "00")
-    
     ## half hourly data
-    outDF2 <- summaryBy(PPFD_Avg+AirTC_Avg+RH+WS_ms_Avg+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
-                        FUN=mean,
-                        data=myDF2, keep.names=T, na.rm=T)
+    outDF2 <- prepare_ros_table05_data()
     
     ### merge the two datasets
     outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
@@ -54,27 +17,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
     
     #######################################################################################
     ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
-    
-    myDF3 <- download_r3_flux_data()
-    
-    ### assign data and time information
-    myDF3$YEAR <- year(myDF3$Date)
-    myDF3$DOY <- yday(myDF3$Date)
-    myDF3$Hour <- substr(myDF3$DateTime, start=12, stop=13)
-    myDF3$HalfHour <- substr(myDF3$DateTime, start=15, stop=16)
-    
-    ## ignore 2020 & 2011
-    myDF3 <- subset(myDF3, YEAR != "2020")
-    myDF3 <- subset(myDF3, YEAR != "2011")
-    
-    outDF3 <- myDF3[,c("Date", "Hour", "HalfHour",
-                        "Ts_mean", "wnd_spd", "LI190SB_PAR_Den_Avg",
-                       "TargTempC_Avg.1.", "Net_SW_Avg", "Net_LW_Avg",
-                       "Net_Rad_Avg", "Pressure_hPa_Avg")]
-    
-    outDF3$Pressure_kPa <- outDF3$Pressure_hPa_Avg / 10
-    outDF3$Pressure_Pa <- outDF3$Pressure_hPa_Avg * 100
-    
+    outDF3 <- prepare_r3_flux_data()
     
     ### merge the two datasets
     outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
@@ -119,15 +62,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
                         FUN=mean,
                         data=myDF4, keep.names=T, na.rm=T)
     
-    
-    ### calculate RH
-    saturate.vp.func <- function(Tc,a=6.12,m=7.59,Tn=240.73){
-        # T = Temperature (°C)
-        VPS <- a*10^(m*Tc/(Tc+Tn))
-        return(VPS)
-    }
-    
-    outDF4$RH <- outDF4$IRGA.Vapor.Pressure/saturate.vp.func(outDF4$Air.Temp)
+    outDF4$RH <- outDF4$IRGA.Vapor.Pressure/saturate_vp_func(outDF4$Air.Temp)
     
     
     ### quality control
@@ -218,7 +153,10 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
     outDF9$PSurf <- ifelse(is.na(outDF9$PSurf), 1015, outDF9$PSurf)
     
     ### shortwave radiation
-    outDF9$SWdown <- ifelse(outDF9$SWnet<=0, 0.0, outDF9$SWnet)
+    #outDF9$SWdown <- ifelse(outDF9$SWnet<=0, 0.0, outDF9$SWnet)
+    b <- min(outDF9$SWnet, na.rm=T)
+    
+    outDF9$SWdown <- outDF9$SWnet + abs(b)
     
     ### longwave down 
     outDF9$tairK <- outDF9$Tair + 273.15
