@@ -64,11 +64,11 @@ prepare_EucFACE_historic_met_data_csv(timestep="daily")
 
 #### dry
 prepare_EucFACE_observed_dry_met_data_csv(timestep="half_hourly", run.option="newrun")
-prepare_EucFACE_observed_dry_met_data_csv(timestep="daily", run.option="newrun")
+prepare_EucFACE_observed_dry_met_data_csv(timestep="daily", run.option="rerun")
 
 #### wet
-prepare_EucFACE_observed_wet_met_data_csv(timestep="half_hourly", run.option="newrun")
-prepare_EucFACE_observed_wet_met_data_csv(timestep="daily", run.option="newrun")
+prepare_EucFACE_observed_wet_met_data_csv(timestep="half_hourly")
+prepare_EucFACE_observed_wet_met_data_csv(timestep="daily")
 
 ###########################################################################
 #### Step 2.3. Prepare 50-year future prediction data

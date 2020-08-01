@@ -17,8 +17,11 @@ prepare_ros_table15_data <- function() {
     ## assign half hour 
     myDF1$HalfHour <- ifelse(myDF1$Minute > 30, "30", "00")
     
+    ### fill SoilTemp missing values
+    myDF1$SoilTempROS <- rowMeans(myDF1[c("SoilTemp_Avg.1.", "SoilTemp_Avg.2.")], na.rm=TRUE)
+    
     ## half hourly rainfall data
-    outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
+    outDF1 <- summaryBy(Rain_mm_Tot+SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=sum,
                         data=myDF1, keep.names=T, na.rm=T)
     
     

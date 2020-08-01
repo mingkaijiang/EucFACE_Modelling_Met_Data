@@ -8,6 +8,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         outDF2 <- read.csv("output/observed/input/ros_table05_data.csv")
         outDF3 <- read.csv("output/observed/input/r3_flux_data.csv")
         outDF4 <- read.csv("output/observed/input/prepare_co2_data.csv")
+        outDF10 <- read.csv("output/observed/input/prepare_soil_data.csv")
         
     } else if (run.option == "newrun") {
         ### ROS station rainfall (and soil temperature, volumetric soil water content) data
@@ -22,7 +23,10 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         outDF3 <- prepare_r3_flux_data()
         
         ### CO2 concentration in the rings
-        outDF8 <- prepare_co2_data()
+        outDF4 <- prepare_co2_data()
+        
+        ### EucFACE soil temperature data
+        outDF10 <- prepare_soil_data()
     }
     
     
@@ -58,6 +62,10 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF9$Pressure_kPa <- NULL
     outDF9$Pressure_Pa <- NULL
     
+    outDF9$SoilTemp <- ifelse(is.na(outDF9$SoilTemp), outDF9$ASoilTemp_Avg, outDF9$SoilTemp)
+    outDF9$SoilTempROS <- NULL
+    outDF9$ASoilTemp_Avg <- NULL
+    
     
     ### assign column names
     colnames(outDF9) <- c("Date", "Hour", "HalfHour", "Rain", "SWnet", "LWnet",
@@ -92,7 +100,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ### shortwave radiation
     #outDF9$SWdown <- ifelse(outDF9$SWnet<=0, 0.0, outDF9$SWnet)
     b <- min(outDF9$SWnet, na.rm=T)
-    
     outDF9$SWdown <- outDF9$SWnet + abs(b)
     
     ### longwave down 
@@ -118,45 +125,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF9$PSurf <- outDF9$PSurf * 100
     
     #######################################################################################
-    ### EucFACE soil temperature data
-    soilDF <- download_soil_data()
+    outDF13 <- merge(outDF9, outDF10, by=c("Date","Hour","HalfHour"), all=T)
     
-    
-    ### assign data and time information
-    soilDF$YEAR <- year(soilDF$Date)
-    soilDF$DOY <- yday(soilDF$Date)
-    soilDF$Hour <- substr(soilDF$DateTime, start=12, stop=13)
-    soilDF$Minute <- substr(soilDF$DateTime, start=15, stop=16)
-    
-    ## ignore 2020 & 2011
-    soilDF <- subset(soilDF, YEAR != "2020")
-    soilDF <- subset(soilDF, YEAR != "2011")
-    
-    ## assign half hour 
-    soilDF$HalfHour <- ifelse(soilDF$Minute > 30, "30", "00")
-    
-    ## average soil temperature data across replicates
-    soilDF$SoilTemp <- rowMeans(soilDF[c("T30cm_1_Avg", "T30cm_2_Avg")], na.rm=TRUE)
-    
-    ## half hourly rainfall data
-    outDF10 <- summaryBy(SoilTemp~Date+Hour+HalfHour, FUN=mean,
-                        data=soilDF, keep.names=T, na.rm=T)
-    
-    
-    outDF11 <- merge(outDF9, outDF10, by=c("Date","Hour","HalfHour"), all=T)
-    
-    ### fill SoilTemp missing values
-    myDF1$SoilTempROS <- rowMeans(myDF1[c("SoilTemp_Avg.1.", "SoilTemp_Avg.2.")], na.rm=TRUE)
-    
-    outDF12 <- summaryBy(SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=mean,
-                         data=myDF1, keep.names=T, na.rm=T)
-    
-    outDF13 <- merge(outDF11, outDF12, by=c("Date","Hour","HalfHour"), all=T)
-    
-    ## fill missing values
-    outDF13$SoilTemp <- ifelse(is.na(outDF13$SoilTemp), outDF13$ASoilTemp_Avg, outDF13$SoilTemp)
-    outDF13$SoilTempROS <- NULL
-    outDF13$ASoilTemp_Avg <- NULL
     
     ## order
     outDF13 <- outDF13[order(outDF13$Date, outDF13$Hour, outDF13$HalfHour),]
