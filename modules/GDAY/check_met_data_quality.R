@@ -34,7 +34,9 @@ check_met_data_quality <- function()  {
     
     pdf("output/GDAY/quality_check/spin_up_historic_check.pdf")
     for (i in 3:n) {
-        plot(tDF2[,i]~tDF2$YEAR)
+        plot(tDF2[,i]~tDF2$YEAR, xlab="year", ylab=colnames(tDF2)[i])
+        title(colnames(tDF2)[i])
+        
     }
     dev.off()
     
