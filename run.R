@@ -34,6 +34,8 @@ source("prepare.R")
 ###########################################################################
 #### Step 2.1. prepare spin-up data
 #### weather data: recycle Martin's 50 year equilibrium weather data
+#### which we name as period 1700-1749
+### note that leap days are removed.
 
 ### csv
 prepare_EucFACE_spinup_met_data_csv(timestep="half_hourly")

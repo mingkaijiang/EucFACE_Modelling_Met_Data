@@ -77,6 +77,13 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     colnames(headDF) <- var.list
     rownames(headDF) <- NULL
     
+    
+    ### remove leap year
+    outDF <- outDF[outDF$DOY <= 365, ]
+    
+    ### reassign year information
+    outDF$YEAR <- rep(c(1700:1749), each=(48*365))
+    
     ### decide what timestep to output
     if(timestep == "half_hourly") {
 

@@ -103,10 +103,146 @@ check_GDAY_met_data_quality <- function()  {
     }
     dev.off()
     
-    ### so, the 50-yr spin-up file that I used is different to those used by Martin
-    ### the one used by Martin is called: EUC_met_data_equilibrium_50_yrs.csv
-    ### the one I used in my data processing is called: tmp_data/EucFACE_forcing_1992-2011.csv
+    ### So, the 50-yr spin-up file that I used is different to those used by Martin.
+    ### The one used by Martin is called: EUC_met_data_equilibrium_50_yrs.csv,
+    ### the one I used in my data processing is called: tmp_data/EucFACE_forcing_1992-2011.csv.
+    ### Problem is that, EUC_met_data_equilibrium_50_yrs.csv is a daily file,
+    ### whereas EucFACE_forcing_1992-2011.csv is a half-hourly file.
+    ### Ideally, we will need to create half-hourly spin-up and historic (1750-2011) period files.
     
+    ### So, how do we reconcile the variable value differences between the two files?
+    ### Because it seems that we don't have an option but to use EucFACE_forcing_1992-2011.csv.
+    
+    ### open the two files and check variable match for each individual variable. 
+    
+    ### read in the two spin-up candidate files
+    ### my spin-up file
+    spinDF1 <- read.csv("output/GDAY/EUC_met_spinup_daily_50yrs.csv", skip=4)
+    names(spinDF1)[names(spinDF1) == 'X.year'] <- "year"
+    spinDF1$pdep <- NULL
+    names(spinDF1)[names(spinDF1) == 'CO2'] <- "co2"
+    
+    
+    ### Martin's spin-up file
+    spinDF2 <- read.csv("tmp_data/EUC_met_data_equilibrium_50_yrs.csv", skip=4)
+    names(spinDF2)[names(spinDF2) == 'X.year'] <- "year"
+    spinDF2 <- spinDF2[spinDF2$doy <= 365, ]
+    spinDF2$year <- rep(c(1750:1799), each=365)
+    
+    ### merge the two files
+    plotDF <- rbind(spinDF1, spinDF2)
+    
+    ### average
+    tDF <- summaryBy(.~year, FUN=mean, keep.names=T, na.rm=T, data=plotDF)
+    
+    ## number of columns
+    n <- dim(tDF)[2]
+    
+    pdf("output/GDAY/quality_check/spin-up_file_check.pdf")
+    for (i in 3:n) {
+        plot(tDF[,i]~tDF$year, xlab="year", ylab=colnames(tDF)[i])
+        title(colnames(tDF)[i])
+    }
+    dev.off()
+    
+    
+    ### calculate correction factors
+    sumDF1 <- colMeans(spinDF1)
+    sumDF2 <- colMeans(spinDF2)
+    corrDF <- as.data.frame(sumDF2 - sumDF1)
+    colnames(corrDF) <- "value"
+    
+    write.csv(corrDF, "tmp_data/correction_factor.csv")
+
+    ### correct myDF
+    revDF <- spinDF1
+    
+    revDF$tair <- revDF$tair + corrDF$value[3]
+    revDF$rain <- revDF$rain + corrDF$value[4]
+    revDF$tsoil <- revDF$tsoil + corrDF$value[5]
+    revDF$tam <- revDF$tam + corrDF$value[6]
+    revDF$tpm <- revDF$tpm + corrDF$value[7]
+    revDF$tmin <- revDF$tmin + corrDF$value[8]
+    revDF$tmax <- revDF$tmax + corrDF$value[9]
+    revDF$tday <- revDF$tday + corrDF$value[10]
+    revDF$vpd_am <- revDF$vpd_am + corrDF$value[11]
+    revDF$vpd_pm <- revDF$vpd_pm + corrDF$value[12]
+    revDF$wind <- revDF$wind + corrDF$value[16]
+    revDF$pres <- revDF$pres + corrDF$value[17]
+    revDF$wind_am <- revDF$wind_am + corrDF$value[18]
+    revDF$wind_pm <- revDF$wind_pm + corrDF$value[19]
+    revDF$par_am <- revDF$par_am + corrDF$value[20]
+    revDF$par_pm <- revDF$par_pm + corrDF$value[21]
+    
+    
+    ### merge the two files
+    plotDF <- rbind(revDF, spinDF2)
+    
+    ### average
+    tDF <- summaryBy(.~year, FUN=mean, keep.names=T, na.rm=T, data=plotDF)
+    
+    ## number of columns
+    n <- dim(tDF)[2]
+    
+    pdf("output/GDAY/quality_check/spin-up_file_revised.pdf")
+    for (i in 3:n) {
+        plot(tDF[,i]~tDF$year, xlab="year", ylab=colnames(tDF)[i])
+        title(colnames(tDF)[i])
+    }
+    dev.off()
+    
+    
+    ### check the un-transformed data
+    spinDF <- read.csv("output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv", skip=3, header=F)
+    histDF <- read.csv("output/historic/csv/daily/EUC_met_historic_daily_1750_2011.csv", skip=3, header=F)
+    obsDF <- read.csv("output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv", skip=3, header=F)
+    
+    var.list <- c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
+                  "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
+                  "CO2air", "SoilTemp", "Ndep")
+    
+    colnames(spinDF) <- colnames(histDF) <- var.list
+    
+    spinDF <- spinDF[spinDF$DOY <= 365, ]
+    
+    spinDF$YEAR <- rep(c(1700:1749), each=365)
+    
+    ### generate variable name and unit list
+    var.list2 <- c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
+                  "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
+                  "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")
+    
+    colnames(obsDF) <- var.list2
+    
+    
+    ### variable consistency
+    obsDF$CO2elevated <- NULL
+    names(obsDF)[names(obsDF) == 'CO2ambient'] <- "CO2air"
+    
+    ### check data
+    rDF1 <- rbind(spinDF, histDF)
+    rDF2 <- rbind(histDF, obsDF)
+    
+    ### calculate annual mean
+    ckDF1 <- summaryBy(.~YEAR, FUN=mean, keep.names=T, na.rm=T, data=rDF1)
+    ckDF2 <- summaryBy(.~YEAR, FUN=mean, keep.names=T, na.rm=T, data=rDF2)
+    
+    n1 <- dim(ckDF1)[2]
+    n2 <- dim(ckDF2)[2]
+    
+    pdf("output/GDAY/quality_check/raw_check1.pdf")
+    for (i in 3:n1) {
+        plot(ckDF1[,i]~ckDF1$YEAR, xlab="year", ylab=colnames(ckDF1)[i])
+        title(colnames(ckDF1)[i])
+    }
+    dev.off()
+    
+    pdf("output/GDAY/quality_check/raw_check2.pdf")
+    for (i in 3:n2) {
+        plot(ckDF2[,i]~ckDF2$YEAR, xlab="year", ylab=colnames(ckDF2)[i])
+        title(colnames(ckDF2)[i])
+    }
+    dev.off()
     
     
 }
