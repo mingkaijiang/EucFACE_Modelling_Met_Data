@@ -22,6 +22,7 @@ prepare_ros_table05_data <- function() {
                         FUN=mean,
                         data=myDF2, keep.names=T, na.rm=T)
     
+    write.csv(outDF2, "output/observed/input/ros_table05_data.csv", row.names=F)
     
     return(outDF2)
 }

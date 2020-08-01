@@ -67,6 +67,8 @@ prepare_co2_data <- function() {
     colnames(outDF8) <- c("Date", "Hour", "HalfHour", "WindSpeed", "Air.Temp",
                           "IRGA.Pressure", "PPFD", "RH", "aCO2", "eCO2")
     
+    ### write
+    write.csv(outDF8, "output/observed/input/prepare_co2_data.csv", row.names=F)
     
     return(outDF8)
 }

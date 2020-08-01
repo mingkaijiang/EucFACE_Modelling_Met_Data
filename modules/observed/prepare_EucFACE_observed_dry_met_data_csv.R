@@ -1,4 +1,4 @@
-prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
+prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     #### Note: prepare observed data (2012 - 2019)
  
     #######################################################################################
@@ -11,23 +11,17 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
     ## half hourly data
     outDF2 <- prepare_ros_table05_data()
     
-    ### merge the two datasets
-    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
-    
-    
     #######################################################################################
     ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
     outDF3 <- prepare_r3_flux_data()
-    
-    ### merge the two datasets
-    outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
-
     
     #######################################################################################
     ### CO2 concentration in the rings
     outDF8 <- prepare_co2_data()
     
-    ### merge all datasets to fill gaps in time coverage and data variables
+    ### merge the two datasets
+    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF9 <- merge(outDF, outDF8, by=c("Date", "Hour", "HalfHour"), all=T)
     
     ### fill data gaps

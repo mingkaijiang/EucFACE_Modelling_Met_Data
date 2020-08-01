@@ -22,5 +22,7 @@ prepare_ros_table15_data <- function() {
                         data=myDF1, keep.names=T, na.rm=T)
     
     
+    write.csv(outDF1, "output/observed/input/ros_table15_data.csv", row.names=F)
+    
     return(outDF1)
 }
