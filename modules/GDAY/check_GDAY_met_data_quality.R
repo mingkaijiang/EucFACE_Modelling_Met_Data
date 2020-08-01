@@ -248,5 +248,14 @@ check_GDAY_met_data_quality <- function()  {
     }
     dev.off()
     
+    sumDF1 <- colMeans(histDF, na.rm=T)
+    sumDF2 <- colMeans(obsDF, na.rm=T)
+    corrDF <- as.data.frame(sumDF2 - sumDF1)
+    colnames(corrDF) <- "value"
+    
+    write.csv(corrDF, "tmp_data/correction_factor.csv")
+    
+    ### alternatively, can use Martin's Python code to generate mode data for obs period
+    ### will that solve the mismatches between historic and obs?
     
 }

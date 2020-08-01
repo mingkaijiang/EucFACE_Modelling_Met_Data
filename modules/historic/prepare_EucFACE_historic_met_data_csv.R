@@ -110,6 +110,7 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
         dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=outDF2, keep.names=T)
         
         ### extract daytime DF
+        #subDF <- outDF2
         subDF <- subset(outDF2, PAR > 0.0)
         
         dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2air+SoilTemp+Ndep~YEAR+DOY,

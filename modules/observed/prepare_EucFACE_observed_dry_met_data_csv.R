@@ -156,6 +156,16 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ## soilTemp convert to K
     out$SoilTemp <- outDF$SoilTemp + 273.15
     
+    ### correction
+    #out$SWdown <- out$SWdown - 124.72
+    #out$PAR <- out$PAR + 323.81
+    #out$LWdown <- out$LWdown - 13.35
+    #out$Tair <- out$Tair + 1.79
+    #out$VPD <- out$VPD + 104.47
+    #out$RH <- out$RH - 1.64
+    #out$PSurf <- out$PSurf - 16.90
+    #out$SoilTemp <- out$SoilTemp + 2.15
+    
     
     #######################################################################################
     
@@ -195,6 +205,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=out, keep.names=T)
         
         ### extract daytime DF
+        #subDF <- outDF
         subDF <- subset(out, PAR > 0.0)
         
         dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2ambient+CO2elevated+SoilTemp+Ndep~YEAR+DOY,

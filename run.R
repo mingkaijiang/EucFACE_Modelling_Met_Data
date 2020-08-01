@@ -63,7 +63,7 @@ prepare_EucFACE_historic_met_data_csv(timestep="daily")
 ####             OBS_DRY_ELE_NOP: eCO2, dry (realsitic weather)
 
 #### dry
-prepare_EucFACE_observed_dry_met_data_csv(timestep="half_hourly", run.option="newrun")
+prepare_EucFACE_observed_dry_met_data_csv(timestep="half_hourly", run.option="rerun")
 prepare_EucFACE_observed_dry_met_data_csv(timestep="daily", run.option="rerun")
 
 #### wet
