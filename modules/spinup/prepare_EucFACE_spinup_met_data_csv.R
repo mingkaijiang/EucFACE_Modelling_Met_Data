@@ -13,7 +13,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
     ### add pre-industrial N deposition 
     ### 2.25 kg N ha-1 yr-1
     ### equivalent to: 0.225 g N m-2 yr-1
-    inDF$Ndep <- 0.225 / 365
+    inDF$Ndep <- 0.225 
 
     
     ### generate variable name and unit list
@@ -96,11 +96,11 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
         
     } else if(timestep == "daily") {
         
-        ### calculate total rainfall of the day
-        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=inDF, keep.names=T)
+        dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=outDF, keep.names=T)
+        
         
         ### extract daytime DF
-        subDF <- subset(inDF, PAR > 0.0)
+        subDF <- subset(outDF, PAR > 0.0)
         
         dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2air+SoilTemp+Ndep~YEAR+DOY,
                           FUN=mean, data=subDF, keep.names=T)
@@ -114,14 +114,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
         
         outDF2 <- outDF2[order(outDF2$YEAR, outDF2$DOY),]
         
-        doutDF <- c()
-        
-        ### random arranging to create 50 years of data
-        for (i in yr.list) {
-            tmpDF <- subset(outDF2, YEAR == i)
-            doutDF <- rbind(doutDF, tmpDF)
-        }
-        
+
         ### add unit and name list
         unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
                        "Pa", "%", "m s-1", "Pa", "ppmv", "K", "g N m-2 yr-1")
@@ -143,7 +136,7 @@ prepare_EucFACE_spinup_met_data_csv <- function(timestep) {
         write.table(headDF, "output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(doutDF, "output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv",
+        write.table(outDF2, "output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         

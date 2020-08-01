@@ -66,7 +66,7 @@ prepare_EucFACE_historic_met_data_csv <- function(timestep) {
     ndepDF$elevatedCO2 <- NULL
     
     ### convert unit to g N m-2 yr-1
-    ndepDF$Ndep <- ndepDF$Ndep / 10
+    ndepDF$Ndep <- ndepDF$Ndep / 10 
 
     #######################################################################################
     ### add n deposition  data for the period of 1992 to 2011

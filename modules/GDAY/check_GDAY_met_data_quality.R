@@ -192,6 +192,10 @@ check_GDAY_met_data_quality <- function()  {
     dev.off()
     
     
+    
+    
+    ################################################################################
+    
     ### check the un-transformed data
     spinDF <- read.csv("output/spinup/csv/daily/EUC_met_spinup_daily_50yrs.csv", skip=3, header=F)
     histDF <- read.csv("output/historic/csv/daily/EUC_met_historic_daily_1750_2011.csv", skip=3, header=F)
@@ -203,9 +207,9 @@ check_GDAY_met_data_quality <- function()  {
     
     colnames(spinDF) <- colnames(histDF) <- var.list
     
-    spinDF <- spinDF[spinDF$DOY <= 365, ]
+    #spinDF <- spinDF[spinDF$DOY <= 365, ]
     
-    spinDF$YEAR <- rep(c(1700:1749), each=365)
+    #spinDF$YEAR <- rep(c(1700:1749), each=365)
     
     ### generate variable name and unit list
     var.list2 <- c("YEAR", "DOY", "SWdown", "PAR", "LWdown",

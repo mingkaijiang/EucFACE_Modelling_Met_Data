@@ -22,6 +22,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep) {
     ## half hourly rainfall data
     outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
                         data=myDF1, keep.names=T, na.rm=T)
+    
     #######################################################################################
     
     #######################################################################################
