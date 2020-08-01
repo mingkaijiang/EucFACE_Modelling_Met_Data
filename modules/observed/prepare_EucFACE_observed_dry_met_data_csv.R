@@ -2,27 +2,35 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     #### Note: prepare observed data (2012 - 2019)
  
     #######################################################################################
-    ### ROS station rainfall (and soil temperature, volumetric soil water content) data
-    ## half hourly rainfall data
-    outDF1 <- prepare_ros_table15_data()
+
+    if (run.option == "rerun") {
+        outDF1 <- read.csv("output/observed/input/ros_table15_data.csv")
+        outDF2 <- read.csv("output/observed/input/ros_table05_data.csv")
+        outDF3 <- read.csv("output/observed/input/r3_flux_data.csv")
+        outDF4 <- read.csv("output/observed/input/prepare_co2_data.csv")
+        
+    } else if (run.option == "newrun") {
+        ### ROS station rainfall (and soil temperature, volumetric soil water content) data
+        ## half hourly rainfall data
+        outDF1 <- prepare_ros_table15_data()
+        
+        ### ROS station radiation, wind speed, air temperature, humidity at 5 min interval
+        ## half hourly data
+        outDF2 <- prepare_ros_table05_data()
+        
+        ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
+        outDF3 <- prepare_r3_flux_data()
+        
+        ### CO2 concentration in the rings
+        outDF8 <- prepare_co2_data()
+    }
+    
     
     #######################################################################################
-    ### ROS station radiation, wind speed, air temperature, humidity at 5 min interval
-    ## half hourly data
-    outDF2 <- prepare_ros_table05_data()
-    
-    #######################################################################################
-    ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
-    outDF3 <- prepare_r3_flux_data()
-    
-    #######################################################################################
-    ### CO2 concentration in the rings
-    outDF8 <- prepare_co2_data()
-    
     ### merge the two datasets
     outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
-    outDF9 <- merge(outDF, outDF8, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF9 <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
     
     ### fill data gaps
     outDF9$RH.y <- ifelse(is.na(outDF9$RH.y), outDF9$RH.x, outDF9$RH.y)
