@@ -83,15 +83,17 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ### read N deposition and CO2 data
     ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
     colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
-    ndepDF$elevatedCO2 <- NULL
+    #ndepDF$elevatedCO2 <- NULL
     ndepDF$Ndep <- ndepDF$Ndep / 10
     
     ### assign ndep data onto the outDF
     outDF9 <- merge(outDF9, ndepDF, by=c("YEAR", "DOY"), all.x=T)
     
-    outDF9$CO2ambient <- ifelse(is.na(outDF9$CO2ambient), outDF9$CO2air, outDF9$CO2ambient)
-    outDF9$CO2elevated <- ifelse(is.na(outDF9$CO2elevated), outDF9$CO2air, outDF9$CO2elevated)
+    #outDF9$CO2ambient <- ifelse(is.na(outDF9$CO2ambient), outDF9$CO2air, outDF9$CO2ambient)
+    outDF9$CO2ambient <- outDF9$CO2air
+    outDF9$CO2elevated <- outDF9$elevatedCO2
     outDF9$CO2air <- NULL
+    outDF9$elevatedCO2 <- NULL
     
     ### fill missing values
     outDF9$Rain <- ifelse(is.na(outDF9$Rain), 0.0, outDF9$Rain)
