@@ -8,25 +8,26 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         outDF2 <- read.csv("output/observed/input/ros_table05_data.csv")
         outDF3 <- read.csv("output/observed/input/r3_flux_data.csv")
         outDF4 <- read.csv("output/observed/input/prepare_co2_data.csv")
-        outDF10 <- read.csv("output/observed/input/prepare_soil_data.csv")
+        outDF5 <- read.csv("output/observed/input/prepare_soil_data.csv")
         
     } else if (run.option == "newrun") {
-        ### ROS station rainfall (and soil temperature, volumetric soil water content) data
+        ### ROS station Rain_mm_Tot, SoilTempROS, ASoilTemp_Avg
         ## half hourly rainfall data
         outDF1 <- prepare_ros_table15_data()
         
-        ### ROS station radiation, wind speed, air temperature, humidity at 5 min interval
+        ### ROS station PPFD_Avg, AirTC_Avg, RH, WS_ms_Avg, NetSW_Avg, NetLW_Avg, NetRad_Avg
         ## half hourly data
         outDF2 <- prepare_ros_table05_data()
         
-        ### variables to add: VPD, SWdown, LWdown, PSurf, CO2air, SoilTemp, Ndep
+        ### Variables: "Ts_mean", "wnd_spd", "LI190SB_PAR_Den_Avg", "TargTempC_Avg.1.", 
+        ### "Net_SW_Avg", "Net_LW_Avg", "Net_Rad_Avg", "Pressure_kPa_Avg"
         outDF3 <- prepare_r3_flux_data()
         
-        ### CO2 concentration in the rings
+        ### variables:  "WindSpeed", "Air.Temp", "IRGA.Pressure", "PPFD", "RH", "aCO2", "eCO2"
         outDF4 <- prepare_co2_data()
         
         ### EucFACE soil temperature data
-        outDF10 <- prepare_soil_data()
+        outDF5 <- prepare_soil_data()
     }
     
     
@@ -34,50 +35,50 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ### merge the two datasets
     outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
-    outDF9 <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
     
     ### fill data gaps
-    outDF9$RH.y <- ifelse(is.na(outDF9$RH.y), outDF9$RH.x, outDF9$RH.y)
-    outDF9$RH.x <- NULL
+    outDF$RH.y <- ifelse(is.na(outDF$RH.y), outDF$RH.x, outDF$RH.y)
+    outDF$RH.x <- NULL
     
-    outDF9$WindSpeed <- ifelse(is.na(outDF9$WindSpeed), outDF9$WS_ms_Avg, outDF9$WindSpeed)
-    outDF9$WS_ms_Avg <- NULL
-    outDF9$wnd_spd <- NULL
+    outDF$WindSpeed <- ifelse(is.na(outDF$WindSpeed), outDF$WS_ms_Avg, outDF$WindSpeed)
+    outDF$WS_ms_Avg <- NULL
+    outDF$wnd_spd <- NULL
 
-    outDF9$Air.Temp <- ifelse(is.na(outDF9$Air.Temp), outDF9$AirTC_Avg, outDF9$Air.Temp)
-    outDF9$AirTC_Avg <- NULL
-    outDF9$Ts_mean <- NULL
-    outDF9$TargTempC_Avg.1. <- NULL
+    outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
+    outDF$AirTC_Avg <- NULL
+    outDF$Ts_mean <- NULL
+    outDF$TargTempC_Avg.1. <- NULL
     
-    outDF9$PPFD <- ifelse(is.na(outDF9$PPFD), outDF9$PPFD_Avg, outDF9$PPFD)
-    outDF9$PPFD_Avg <- NULL
-    outDF9$LI190SB_PAR_Den_Avg <- NULL
+    outDF$PPFD <- ifelse(is.na(outDF$PPFD), outDF$PPFD_Avg, outDF$PPFD)
+    outDF$PPFD_Avg <- NULL
+    outDF$LI190SB_PAR_Den_Avg <- NULL
 
-    outDF9$Net_SW_Avg <- NULL
-    outDF9$Net_LW_Avg <- NULL
-    outDF9$Net_Rad_Avg <- NULL
+    outDF$Net_SW_Avg <- NULL
+    outDF$Net_LW_Avg <- NULL
+    outDF$Net_Rad_Avg <- NULL
     
-    outDF9$IRGA.Pressure <- ifelse(is.na(outDF9$IRGA.Pressure), outDF9$Pressure_hPa_Avg, outDF9$IRGA.Pressure)
-    outDF9$Pressure_hPa_Avg <- NULL
-    outDF9$Pressure_kPa <- NULL
-    outDF9$Pressure_Pa <- NULL
+    outDF$IRGA.Pressure <- ifelse(is.na(outDF$IRGA.Pressure), outDF$Pressure_hPa_Avg, outDF$IRGA.Pressure)
+    outDF$Pressure_hPa_Avg <- NULL
+    outDF$Pressure_kPa <- NULL
+    outDF$Pressure_Pa <- NULL
     
-    outDF9$SoilTemp <- ifelse(is.na(outDF9$SoilTemp), outDF9$ASoilTemp_Avg, outDF9$SoilTemp)
-    outDF9$SoilTempROS <- NULL
-    outDF9$ASoilTemp_Avg <- NULL
+    outDF$SoilTemp <- ifelse(is.na(outDF$SoilTemp), outDF$ASoilTemp_Avg, outDF$SoilTemp)
+    outDF$SoilTempROS <- NULL
+    outDF$ASoilTemp_Avg <- NULL
     
     
     ### assign column names
-    colnames(outDF9) <- c("Date", "Hour", "HalfHour", "Rain", "SWnet", "LWnet",
+    colnames(outDF) <- c("Date", "Hour", "HalfHour", "Rain", "SWnet", "LWnet",
                           "Radnet", "Wind", "Tair", "PSurf", "PAR", "RH", "CO2ambient",
                           "CO2elevated")
     
     ### calculate VPD
-    outDF9$VPD <- RHtoVPD(outDF9$RH, outDF9$Tair) * 1000
+    outDF$VPD <- RHtoVPD(outDF$RH, outDF$Tair) * 1000
     
     ## add additional variables
-    outDF9$YEAR <- year(outDF9$Date)
-    outDF9$DOY <- yday(outDF9$Date)
+    outDF$YEAR <- year(outDF$Date)
+    outDF$DOY <- yday(outDF$Date)
     
     #######################################################################################
     ### read N deposition and CO2 data
@@ -87,58 +88,58 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ndepDF$Ndep <- ndepDF$Ndep / 10
     
     ### assign ndep data onto the outDF
-    outDF9 <- merge(outDF9, ndepDF, by=c("YEAR", "DOY"), all.x=T)
+    outDF <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
     
-    #outDF9$CO2ambient <- ifelse(is.na(outDF9$CO2ambient), outDF9$CO2air, outDF9$CO2ambient)
-    outDF9$CO2ambient <- outDF9$CO2air
-    outDF9$CO2elevated <- outDF9$elevatedCO2
-    outDF9$CO2air <- NULL
-    outDF9$elevatedCO2 <- NULL
+    #outDF$CO2ambient <- ifelse(is.na(outDF$CO2ambient), outDF$CO2air, outDF$CO2ambient)
+    outDF$CO2ambient <- outDF$CO2air
+    outDF$CO2elevated <- outDF$elevatedCO2
+    outDF$CO2air <- NULL
+    outDF$elevatedCO2 <- NULL
     
     ### fill missing values
-    outDF9$Rain <- ifelse(is.na(outDF9$Rain), 0.0, outDF9$Rain)
-    outDF9$PSurf <- ifelse(is.na(outDF9$PSurf), 1015, outDF9$PSurf)
+    outDF$Rain <- ifelse(is.na(outDF$Rain), 0.0, outDF$Rain)
+    outDF$PSurf <- ifelse(is.na(outDF$PSurf), 1015, outDF$PSurf)
     
     ### shortwave radiation
-    #outDF9$SWdown <- ifelse(outDF9$SWnet<=0, 0.0, outDF9$SWnet)
-    b <- min(outDF9$SWnet, na.rm=T)
-    outDF9$SWdown <- outDF9$SWnet + abs(b)
+    #outDF$SWdown <- ifelse(outDF$SWnet<=0, 0.0, outDF$SWnet)
+    b <- min(outDF$SWnet, na.rm=T)
+    outDF$SWdown <- outDF$SWnet + abs(b)
     
     ### longwave down 
-    outDF9$tairK <- outDF9$Tair + 273.15
+    outDF$tairK <- outDF$Tair + 273.15
     
-    outDF9$sat_vapress <- 611.2 * exp(17.67 * ((outDF9$tairK - 273.15) / (outDF9$tairK - 29.65)))
-    outDF9$vapress <- max(5.0, outDF9$RH) / 100. * outDF9$sat_vapress
-    outDF9$LWdown <- 2.648 * outDF9$tairK + 0.0346 * outDF9$vapress - 474.0
+    outDF$sat_vapress <- 611.2 * exp(17.67 * ((outDF$tairK - 273.15) / (outDF$tairK - 29.65)))
+    outDF$vapress <- max(5.0, outDF$RH) / 100. * outDF$sat_vapress
+    outDF$LWdown <- 2.648 * outDF$tairK + 0.0346 * outDF$vapress - 474.0
 
     ### fill missing values    
-    outDF9$SWdown <- na.locf(outDF9$SWdown)
+    outDF$SWdown <- na.locf(outDF$SWdown)
 
     ### delete unneeded variables
-    outDF9$sat_vapress <- NULL
-    outDF9$vapress <- NULL
-    outDF9$Radnet <- NULL
-    outDF9$SWnet <- NULL
-    outDF9$LWnet <- NULL
-    outDF9$tairK <- NULL
+    outDF$sat_vapress <- NULL
+    outDF$vapress <- NULL
+    outDF$Radnet <- NULL
+    outDF$SWnet <- NULL
+    outDF$LWnet <- NULL
+    outDF$tairK <- NULL
     
     ### unit
-    outDF9$Tair <- outDF9$Tair + 273.15
-    outDF9$PSurf <- outDF9$PSurf * 100
+    outDF$Tair <- outDF$Tair + 273.15
+    outDF$PSurf <- outDF$PSurf * 100
     
     #######################################################################################
-    outDF13 <- merge(outDF9, outDF10, by=c("Date","Hour","HalfHour"), all=T)
-    
+    ### merge
+    outDF6 <- merge(outDF, outDF5, by=c("Date","Hour","HalfHour"), all=T)
     
     ## order
-    outDF13 <- outDF13[order(outDF13$Date, outDF13$Hour, outDF13$HalfHour),]
+    outDF6 <- outDF6[order(outDF6$Date, outDF6$Hour, outDF6$HalfHour),]
 
     ## datetime
-    outDF13$DateTime <- as.POSIXct(paste0(outDF13$Date, " ", outDF13$Hour, ":",
-                                       outDF13$HalfHour, ":00"),
+    outDF6$DateTime <- as.POSIXct(paste0(outDF6$Date, " ", outDF6$Hour, ":",
+                                       outDF6$HalfHour, ":00"),
                                 format = "%Y-%m-%d %H:%M:%S")
     
-    outDF <- unique(outDF13, by="DateTime")
+    outDF7 <- unique(outDF6, by="DateTime")
     
     #######################################################################################
     ## create a new outDF to store all data time series
@@ -146,15 +147,19 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     l <- length(time.series)
     hour.series <- seq(0.5, 24, by=0.5)
     
-    outDF$HOUR <- rep(hour.series, times=l)
+    outDF7$HOUR <- rep(hour.series, times=l)
 
     ## arrange select
-    out <- outDF[,c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
+    out <- outDF7[,c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                       "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
                       "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
     
     ## soilTemp convert to K
-    out$SoilTemp <- outDF$SoilTemp + 273.15
+    out$SoilTemp <- outDF7$SoilTemp + 273.15
+    
+    ### processing in Martin's code
+    out$VPD <- ifelse(out$VPD < 0.05, 0.05, out$VPD)
+    out$Wind <- ifelse(out$Wind <= 0.0, 0.1, out$Wind)
     
     ### correction
     #out$SWdown <- out$SWdown - 124.72
@@ -205,8 +210,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=out, keep.names=T)
         
         ### extract daytime DF
-        #subDF <- outDF
-        subDF <- subset(out, PAR > 0.0)
+        subDF <- subset(out, PAR >= 5.0)
         
         dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2ambient+CO2elevated+SoilTemp+Ndep~YEAR+DOY,
                           FUN=mean, data=subDF, keep.names=T)
@@ -214,11 +218,11 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         dDF <- merge(dDF1, dDF2, by=c("YEAR", "DOY"), all=T)
         
         ### rearrange variables
-        outDF2 <- dDF[,c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
+        outDF8 <- dDF[,c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
                          "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
                          "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
         
-        outDF2 <- outDF2[order(outDF2$YEAR, outDF2$DOY),]
+        outDF8 <- outDF8[order(outDF8$YEAR, outDF8$DOY),]
         
         ### add unit and name list
         unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
@@ -241,7 +245,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         write.table(headDF, "output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(outDF2, "output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
+        write.table(outDF8, "output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         

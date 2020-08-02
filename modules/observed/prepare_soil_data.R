@@ -18,7 +18,7 @@ prepare_soil_data <- function() {
     ## average soil temperature data across replicates
     soilDF$SoilTemp <- rowMeans(soilDF[c("T30cm_1_Avg", "T30cm_2_Avg")], na.rm=TRUE)
     
-    ## half hourly rainfall data
+    ## half hourly data
     outDF10 <- summaryBy(SoilTemp~Date+Hour+HalfHour, FUN=mean,
                          data=soilDF, keep.names=T, na.rm=T)
     
