@@ -43,8 +43,8 @@ prepare_GDAY_historic_data <- function() {
     
     ### extract daytime DF
     subDF <- subset(myDF, PAR >= 5.0)
-    subDF.am <- subset(subDF, HOUR >= 6.5 & HOUR <= 11.5)
-    subDF.pm <- subset(subDF, HOUR >= 12 & HOUR <= 19.5)
+    subDF.am <- subset(subDF, HOUR >= 6. & HOUR <= 11.5)
+    subDF.pm <- subset(subDF, HOUR >= 12 & HOUR <= 19.)
     
     ### calculate AM and PM values
     dDF2 <- summaryBy(Tair+VPD+Wind~YEAR+DOY, FUN=mean, 
