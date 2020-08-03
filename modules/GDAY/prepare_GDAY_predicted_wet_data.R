@@ -40,16 +40,16 @@ prepare_GDAY_predicted_wet_data <- function() {
     ## PAR: from umol m-2 s-1 to mj m-2 halfhour-1
     ## 1 W m-2 = 4.6 umol m-2 s-1
     ## 1 MJ s-1 = 1e6 W
-    myDF$PAR <- myDF$PAR / 4.6 * 1e-6 * 1800
+    #myDF$PAR <- myDF$PAR / 4.6 * 1e-6 * 1800
     
     
     ### calculate daily sum of rainfall
     dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=myDF, keep.names=T)
     
     ### extract daytime DF
-    subDF <- subset(myDF, PAR > 0.0)
-    subDF.am <- subset(subDF, HOUR <= 12)
-    subDF.pm <- subset(subDF, HOUR > 12)
+    subDF <- subset(myDF, PAR >= 5.0)
+    subDF.am <- subset(subDF, HOUR >= 6.5 & HOUR <= 11.5)
+    subDF.pm <- subset(subDF, HOUR >= 12 & HOUR <= 19.5)
     
     ### calculate AM and PM values
     dDF2 <- summaryBy(Tair+VPD+Wind~YEAR+DOY, FUN=mean, 

@@ -37,11 +37,6 @@ prepare_GDAY_spinup_data <- function() {
     ## PSurf from Pa to Kpa
     myDF$PSurf <- myDF$PSurf / 1000
     
-    ## PAR: from umol m-2 s-1 to mj m-2 halfhour-1
-    ## 1 W m-2 = 4.6 umol m-2 s-1
-    ## 1 MJ s-1 = 1e6 W
-    myDF$PAR <- myDF$PAR / 4.6 * 1e-6 * 1800
-    
     ## remove leap year and keep only 20 years of data
     myDF <- subset(myDF, DOY <= 365)
     myDF$YEAR <- rep(c(1700:1749), each=(365*48))
@@ -51,9 +46,9 @@ prepare_GDAY_spinup_data <- function() {
     dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=myDF, keep.names=T)
     
     ### extract daytime DF
-    subDF <- subset(myDF, PAR > 0.0)
-    subDF.am <- subset(subDF, HOUR <= 12)
-    subDF.pm <- subset(subDF, HOUR > 12)
+    subDF <- subset(myDF, PAR >= 5.0)
+    subDF.am <- subset(subDF, HOUR >= 6.5 & HOUR <= 11.5)
+    subDF.pm <- subset(subDF, HOUR >= 12 & HOUR <= 19.5)
     
     ### calculate AM and PM values
     dDF2 <- summaryBy(Tair+VPD+Wind~YEAR+DOY, FUN=mean, 
@@ -77,6 +72,12 @@ prepare_GDAY_spinup_data <- function() {
     ### calculate Tmin and Tmax
     dDF6 <- summaryBy(Tair~YEAR+DOY, FUN=c(min, max),
                      data=subDF, keep.names=T, na.rm=T)
+    
+    ## PAR: from umol m-2 s-1 to mj m-2 halfhour-1
+    ## 1 W m-2 = 4.6 umol m-2 s-1
+    ## 1 MJ s-1 = 1e6 W
+    subDF.am$PAR <- subDF.am$PAR / 4.6 * 1e-6 * 1800
+    subDF.pm$PAR <- subDF.pm$PAR / 4.6 * 1e-6 * 1800
     
     ## PAR for morning and afternoons
     dDF7 <- summaryBy(PAR~YEAR+DOY, FUN=sum,

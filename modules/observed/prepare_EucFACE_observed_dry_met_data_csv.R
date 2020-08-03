@@ -136,8 +136,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ### calculate VPD
     outDF$VPD <- RHtoVPD(outDF$RH, outDF$Tair) * 1000
     
-    out$Wind <- ifelse(out$Wind <= 0.1, 0.1, out$Wind)
-    out$Wind <- ifelse(is.na(outDF$Wind), 0.1, outDF$Wind)
+    outDF$Wind <- ifelse(outDF$Wind <= 0.1, 0.1, outDF$Wind)
+    outDF$Wind <- ifelse(is.na(outDF$Wind), 0.1, outDF$Wind)
     
     ### fill missing values
     outDF$Rain <- ifelse(is.na(outDF$Rain), 0.0, outDF$Rain)
