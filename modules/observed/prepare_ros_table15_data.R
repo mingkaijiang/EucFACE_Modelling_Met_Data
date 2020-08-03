@@ -28,6 +28,7 @@ prepare_ros_table15_data <- function() {
     outDF2 <- summaryBy(SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=mean,
                         data=myDF1, keep.names=T, na.rm=T)
     
+    ### merge
     outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     
     outDF$SoilTempROS <- NULL

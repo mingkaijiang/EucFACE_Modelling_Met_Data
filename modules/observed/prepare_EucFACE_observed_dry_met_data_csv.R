@@ -26,7 +26,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$HalfHour <- as.numeric(as.character(outDF$HalfHour))
     outDF$ActHour <- as.numeric(outDF$ActHour)
     
-    
+    run.option = "rerun"
     #######################################################################################
     if (run.option == "rerun") {
         outDF1 <- read.csv("output/observed/input/ros_table15_data.csv")
@@ -54,9 +54,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         ### EucFACE soil temperature data
         outDF5 <- prepare_soil_data()
     }
-    
-    
-    
     
     #######################################################################################
     ### prepare outDF with correct date period
@@ -86,10 +83,13 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF5, by=c("Date","Hour","HalfHour"), all=T)
     
+    ## add additional variables
+    outDF$YEAR <- year(outDF$Date)
+    outDF$DOY <- yday(outDF$Date)
     
-    test$ID <- paste0(test$Date, "-", test$Hour, "-", test$HalfHour)
-    test2 <- unique(test$ID)
-    length(test2)
+    ### assign ndep data onto the outDF
+    ndepDF <- prepare_ndep_data()
+    outDF <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
     
     ### fill data gaps
     outDF$RH.y <- ifelse(is.na(outDF$RH.y), outDF$RH.x, outDF$RH.y)
@@ -101,7 +101,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
 
     outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
     outDF$AirTC_Avg <- NULL
-    outDF$Ts_mean <- NULL
     outDF$TargTempC_Avg.1. <- NULL
     
     outDF$PPFD <- ifelse(is.na(outDF$PPFD), outDF$PPFD_Avg, outDF$PPFD)
@@ -117,37 +116,26 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$Pressure_kPa <- NULL
     outDF$Pressure_Pa <- NULL
     
-    outDF$SoilTemp <- outDF$ASoilTemp_Avg #ifelse(is.na(outDF$SoilTemp), outDF$ASoilTemp_Avg, outDF$SoilTemp)
+    outDF$SoilTemp <- ifelse(is.na(outDF$ASoilTemp_Avg),outDF$SoilTemp1, outDF$ASoilTemp_Avg)
     outDF$ASoilTemp_Avg <- NULL
+    outDF$aCO2 <- NULL
+    outDF$eCO2 <- NULL
+    outDF$Ts_mean <- NULL
+    outDF$SoilTemp2 <- NULL
+    outDF$SoilTemp3 <- NULL
+    outDF$SoilTemp1 <- NULL
     
     
     ### assign column names
-    colnames(outDF) <- c("Date", "Hour", "HalfHour", "Rain", "SWnet", "LWnet",
-                          "Radnet", "Wind", "Tair", "PSurf", "PAR", "RH", "CO2ambient",
-                          "CO2elevated")
+    colnames(outDF) <- c("YEAR", "DOY", "Date", "Hour", "HalfHour", "ActHour", 
+                         "Rain", "SWnet", "LWnet",
+                         "Radnet", "Wind", "Tair", "PSurf", "PAR", "RH", 
+                         "CO2ambient", "CO2elevated", "Ndep", "SoilTemp")
     
     ### calculate VPD
     outDF$VPD <- RHtoVPD(outDF$RH, outDF$Tair) * 1000
     
-    ## add additional variables
-    outDF$YEAR <- year(outDF$Date)
-    outDF$DOY <- yday(outDF$Date)
     
-    #######################################################################################
-    ### read N deposition and CO2 data
-    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
-    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
-    #ndepDF$elevatedCO2 <- NULL
-    ndepDF$Ndep <- ndepDF$Ndep / 10
-    
-    ### assign ndep data onto the outDF
-    outDF <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
-    
-    #outDF$CO2ambient <- ifelse(is.na(outDF$CO2ambient), outDF$CO2air, outDF$CO2ambient)
-    outDF$CO2ambient <- outDF$CO2air
-    outDF$CO2elevated <- outDF$elevatedCO2
-    outDF$CO2air <- NULL
-    outDF$elevatedCO2 <- NULL
     
     ### fill missing values
     outDF$Rain <- ifelse(is.na(outDF$Rain), 0.0, outDF$Rain)
@@ -194,13 +182,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     
     outDF7 <- unique(outDF6, by="DateTime")
     
-    #######################################################################################
-    ## create a new outDF to store all data time series
-    time.series <- seq(as.Date("2012-01-01"), as.Date("2019-12-31"), by = "day")
-    l <- length(time.series)
-    hour.series <- seq(0.5, 24, by=0.5)
-    
-    outDF7$HOUR <- rep(hour.series, times=l)
+    outDF7$HOUR <- rep(act.hour.series, times=l)
 
     ## arrange select
     out <- outDF7[,c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
