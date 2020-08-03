@@ -18,11 +18,11 @@ prepare_ros_table05_data <- function() {
     myDF2$HalfHour <- ifelse(myDF2$Minute > 30, "30", "00")
     
     ## half hourly data
-    outDF1 <- summaryBy(PPFD_Avg+AirTC_Avg+RH+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
+    outDF1 <- summaryBy(AirTC_Avg+RH+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
                         FUN=mean,
                         data=myDF2, keep.names=T, na.rm=T)
     
-    outDF2 <- summaryBy(WS_ms_Max~Date+Hour+HalfHour, 
+    outDF2 <- summaryBy(PPFD_Avg+WS_ms_Max~Date+Hour+HalfHour, 
                         FUN=max,
                         data=myDF2, keep.names=T, na.rm=T)
     

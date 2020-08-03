@@ -44,7 +44,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         ## half hourly data
         outDF2 <- prepare_ros_table05_data()
         
-        ### Variables: "Ts_mean", "LI190SB_PAR_Den_Avg", 
+        ### Variables: 
         ### "Net_SW_Avg", "Net_LW_Avg", "Net_Rad_Avg", "Pressure_kPa_Avg"
         outDF3 <- prepare_r3_flux_data()
         
@@ -99,16 +99,20 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$WS_ms_Max <- NULL
 
     outDF$AirTemp <- ifelse(is.na(outDF$AirTC_Avg), outDF$Air.Temp, outDF$AirTC_Avg)
-    #outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
     outDF$AirTC_Avg <- NULL
     outDF$Air.Temp <- outDF$AirTemp
     outDF$AirTemp <- NULL
     
-    outDF$PPFD <- ifelse(is.na(outDF$PPFD), outDF$PPFD_Avg, outDF$PPFD)
+    outDF$PPFD2 <- outDF$PPFD
+    outDF$PPFD <- ifelse(is.na(outDF$PPFD_Avg), outDF$PPFD2, outDF$PPFD_Avg)
     outDF$PPFD_Avg <- NULL
-    outDF$LI190SB_PAR_Den_Avg <- NULL
+    outDF$PPFD2 <- NULL
 
+    outDF$NetSW_Avg2 <- outDF$NetSW_Avg
+    outDF$NetSW_Avg <- ifelse(is.na(outDF$NetSW_avg2), outDF$Net_SW_Avg, outDF$NetSW_avg2)
     outDF$Net_SW_Avg <- NULL
+    outDF$NetAW_Avg2 <- NULL
+    
     outDF$Net_LW_Avg <- NULL
     outDF$Net_Rad_Avg <- NULL
     
@@ -121,7 +125,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$ASoilTemp_Avg <- NULL
     outDF$aCO2 <- NULL
     outDF$eCO2 <- NULL
-    outDF$Ts_mean <- NULL
     outDF$SoilTemp2 <- NULL
     outDF$SoilTemp3 <- NULL
     outDF$SoilTemp1 <- NULL
@@ -253,7 +256,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
                           FUN=mean, data=subDF, keep.names=T)
     
         dDF <- merge(dDF1, dDF2, by=c("YEAR", "DOY"), all=T)
-        
+
         ### rearrange variables
         outDF8 <- dDF[,c("YEAR", "DOY", "SWdown", "PAR", "LWdown",
                          "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
@@ -284,8 +287,9 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         
         write.table(outDF8, "output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
-        
-        
     }
+    
+    
+    
     
 }
