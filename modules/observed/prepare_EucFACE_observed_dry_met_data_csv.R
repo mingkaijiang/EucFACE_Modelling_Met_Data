@@ -108,10 +108,13 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$PPFD_Avg <- NULL
     outDF$PPFD2 <- NULL
 
-    outDF$NetSW_Avg2 <- outDF$NetSW_Avg
-    outDF$NetSW_Avg <- ifelse(is.na(outDF$NetSW_avg2), outDF$Net_SW_Avg, outDF$NetSW_avg2)
+    #outDF$NetSW_Avg2 <- outDF$NetSW_Avg
+    #outDF$NetSW_Avg <- ifelse(is.na(outDF$Net_SW_Avg), outDF$NetSW_Avg2, outDF$Net_SW_Avg)
+    outDF$NetSW_Avg <- outDF$PAR / 2.3
+    #outDF$NetSW_Avg <- ifelse(is.na(outDF$NetRad_Avg), outDF$Net_Rad_Avg, outDF$NetRad_Avg)
+    
     outDF$Net_SW_Avg <- NULL
-    outDF$NetAW_Avg2 <- NULL
+    #outDF$NetSW_Avg2 <- NULL
     
     outDF$Net_LW_Avg <- NULL
     outDF$Net_Rad_Avg <- NULL
@@ -138,7 +141,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     ### calculate VPD
     outDF$VPD <- RHtoVPD(outDF$RH, outDF$Tair) * 1000
     
-    
+    out$Wind <- ifelse(out$Wind <= 0.1, 0.1, out$Wind)
+    out$Wind <- ifelse(is.na(outDF$Wind), 0.1, outDF$Wind)
     
     ### fill missing values
     outDF$Rain <- ifelse(is.na(outDF$Rain), 0.0, outDF$Rain)
@@ -149,6 +153,9 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     b <- min(outDF$SWnet, na.rm=T)
     outDF$SWdown <- outDF$SWnet + abs(b)
     
+    ### fill missing values    
+    outDF$SWdown <- na.locf(outDF$SWdown)
+    
     ### longwave down 
     outDF$tairK <- outDF$Tair + 273.15
     
@@ -156,8 +163,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$vapress <- max(5.0, outDF$RH) / 100. * outDF$sat_vapress
     outDF$LWdown <- 2.648 * outDF$tairK + 0.0346 * outDF$vapress - 474.0
 
-    ### fill missing values    
-    outDF$SWdown <- na.locf(outDF$SWdown)
 
     ### delete unneeded variables
     outDF$sat_vapress <- NULL
@@ -197,19 +202,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     
     ### processing in Martin's code
     out$VPD <- ifelse(out$VPD < 0.05, 0.05, out$VPD)
-    out$Wind <- ifelse(out$Wind <= 0.1, 0.1, out$Wind)
-    out$Wind <- ifelse(is.na(outDF$Wind), 0.1, outDF$Wind)
-    
-    ### correction
-    #out$SWdown <- out$SWdown - 124.72
-    #out$PAR <- out$PAR + 323.81
-    #out$LWdown <- out$LWdown - 13.35
-    #out$Tair <- out$Tair + 1.79
-    #out$VPD <- out$VPD + 104.47
-    #out$RH <- out$RH - 1.64
-    #out$PSurf <- out$PSurf - 16.90
-    #out$SoilTemp <- out$SoilTemp + 2.15
-    
+
     
     #######################################################################################
     
@@ -263,6 +256,9 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
                          "CO2ambient", "CO2elevated", "SoilTemp", "Ndep")]
         
         outDF8 <- outDF8[order(outDF8$YEAR, outDF8$DOY),]
+        
+        
+        summaryBy(SWdown~YEAR, FUN=mean, data=outDF8)
         
         ### add unit and name list
         unit.list <- c("year", "day", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm day-1",
