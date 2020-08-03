@@ -74,6 +74,12 @@ prepare_GDAY_predicted_wet_data <- function() {
     dDF6 <- summaryBy(Tair~YEAR+DOY, FUN=c(min, max),
                      data=subDF, keep.names=T, na.rm=T)
     
+    ## PAR: from umol m-2 s-1 to mj m-2 halfhour-1
+    ## 1 W m-2 = 4.6 umol m-2 s-1
+    ## 1 MJ s-1 = 1e6 W
+    subDF.am$PAR <- subDF.am$PAR / 4.6 * 1e-6 * 1800
+    subDF.pm$PAR <- subDF.pm$PAR / 4.6 * 1e-6 * 1800
+    
     ## PAR for morining and afternoons
     dDF7 <- summaryBy(PAR~YEAR+DOY, FUN=sum,
                       data=subDF.am, keep.names=T, na.rm=T)
