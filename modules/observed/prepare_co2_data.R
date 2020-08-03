@@ -45,8 +45,7 @@ prepare_co2_data <- function() {
     
     
     outDF4$RH <- outDF4$IRGA.Vapor.Pressure/saturate_vp_func(outDF4$Air.Temp)
-    
-    
+
     ### quality control
     outDF4$Air.Temp[outDF4$Air.Temp > 55] <- 55
     outDF4$RH[outDF4$RH > 100] <- 100

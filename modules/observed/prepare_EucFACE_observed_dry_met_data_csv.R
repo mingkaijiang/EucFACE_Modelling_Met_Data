@@ -44,7 +44,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         ## half hourly data
         outDF2 <- prepare_ros_table05_data()
         
-        ### Variables: "Ts_mean", "LI190SB_PAR_Den_Avg", "TargTempC_Avg.1.", 
+        ### Variables: "Ts_mean", "LI190SB_PAR_Den_Avg", 
         ### "Net_SW_Avg", "Net_LW_Avg", "Net_Rad_Avg", "Pressure_kPa_Avg"
         outDF3 <- prepare_r3_flux_data()
         
@@ -92,15 +92,17 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
     
     ### fill data gaps
-    outDF$RH.y <- ifelse(is.na(outDF$RH.y), outDF$RH.x, outDF$RH.y)
+    outDF$RH.y <- ifelse(is.na(outDF$RH.x), outDF$RH.y, outDF$RH.x)
     outDF$RH.x <- NULL
     
     outDF$WindSpeed <- ifelse(is.na(outDF$WindSpeed), outDF$WS_ms_Max, outDF$WindSpeed)
     outDF$WS_ms_Max <- NULL
 
-    outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
+    outDF$AirTemp <- ifelse(is.na(outDF$AirTC_Avg), outDF$Air.Temp, outDF$AirTC_Avg)
+    #outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
     outDF$AirTC_Avg <- NULL
-    outDF$TargTempC_Avg.1. <- NULL
+    outDF$Air.Temp <- outDF$AirTemp
+    outDF$AirTemp <- NULL
     
     outDF$PPFD <- ifelse(is.na(outDF$PPFD), outDF$PPFD_Avg, outDF$PPFD)
     outDF$PPFD_Avg <- NULL
@@ -110,7 +112,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$Net_LW_Avg <- NULL
     outDF$Net_Rad_Avg <- NULL
     
-    outDF$IRGA.Pressure <- ifelse(is.na(outDF$IRGA.Pressure), outDF$Pressure_hPa_Avg, outDF$IRGA.Pressure)
+    outDF$IRGA.Pressure <- 1013.0 
     outDF$Pressure_hPa_Avg <- NULL
     outDF$Pressure_kPa <- NULL
     outDF$Pressure_Pa <- NULL
@@ -123,7 +125,6 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$SoilTemp2 <- NULL
     outDF$SoilTemp3 <- NULL
     outDF$SoilTemp1 <- NULL
-    
     
     ### assign column names
     colnames(outDF) <- c("YEAR", "DOY", "Date", "Hour", "HalfHour", "ActHour", 
@@ -138,7 +139,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     
     ### fill missing values
     outDF$Rain <- ifelse(is.na(outDF$Rain), 0.0, outDF$Rain)
-    outDF$PSurf <- ifelse(is.na(outDF$PSurf), 1015, outDF$PSurf)
+    outDF$PSurf <- ifelse(is.na(outDF$PSurf), 1013, outDF$PSurf)
     
     ### shortwave radiation
     #outDF$SWdown <- ifelse(outDF$SWnet<=0, 0.0, outDF$SWnet)
