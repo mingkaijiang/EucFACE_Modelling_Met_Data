@@ -41,17 +41,10 @@ check_GDAY_met_data_quality <- function()  {
     }
     dev.off()
     
-    ## problem variable: tam - 2 degree less
-    ##                   tpm - 2 degree less
-    ##                   tday - 2 degree less
-    ##                   vpd_am - small
-    ##                   vpd_pm - small
-    ##                   wind - small
-    ##                   pres: variable
-    ##                   wind_am - small
-    ##                   wind_pm - small
-    ##                   par_am - small
-    ##                   par_pm - small
+    ## some small mismatches, which are totally reasonable
+    ### because spin-up and historic period are "assuemd" data,
+    ### whereas real data are used for 2012 and onward.
+    ### also the mis-match should not cause any problem at all.
     
     
     ### to check of the original 50-year data makes sense in context of EucFACE data
