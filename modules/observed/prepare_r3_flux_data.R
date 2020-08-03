@@ -13,7 +13,8 @@ prepare_r3_flux_data <- function() {
     myDF3 <- subset(myDF3, YEAR != "2011")
     
     outDF3 <- myDF3[,c("Date", "Hour", "HalfHour",
-                       "Ts_mean", "wnd_spd", "LI190SB_PAR_Den_Avg",
+                       "Ts_mean", 
+                       "LI190SB_PAR_Den_Avg",
                        "TargTempC_Avg.1.", "Net_SW_Avg", "Net_LW_Avg",
                        "Net_Rad_Avg", "Pressure_hPa_Avg")]
     

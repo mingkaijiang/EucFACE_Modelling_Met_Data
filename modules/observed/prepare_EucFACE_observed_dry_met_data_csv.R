@@ -40,11 +40,11 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         ## half hourly data
         outDF1 <- prepare_ros_table15_data()
         
-        ### ROS station PPFD_Avg, AirTC_Avg, RH, WS_ms_Avg, NetSW_Avg, NetLW_Avg, NetRad_Avg
+        ### ROS station PPFD_Avg, AirTC_Avg, RH, WS_ms_Max, NetSW_Avg, NetLW_Avg, NetRad_Avg
         ## half hourly data
         outDF2 <- prepare_ros_table05_data()
         
-        ### Variables: "Ts_mean", "wnd_spd", "LI190SB_PAR_Den_Avg", "TargTempC_Avg.1.", 
+        ### Variables: "Ts_mean", "LI190SB_PAR_Den_Avg", "TargTempC_Avg.1.", 
         ### "Net_SW_Avg", "Net_LW_Avg", "Net_Rad_Avg", "Pressure_kPa_Avg"
         outDF3 <- prepare_r3_flux_data()
         
@@ -81,7 +81,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF <- merge(outDF, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
-    outDF <- merge(outDF, outDF5, by=c("Date","Hour","HalfHour"), all=T)
+    outDF <- merge(outDF, outDF5, by=c("Date", "Hour", "HalfHour"), all=T)
     
     ## add additional variables
     outDF$YEAR <- year(outDF$Date)
@@ -95,9 +95,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$RH.y <- ifelse(is.na(outDF$RH.y), outDF$RH.x, outDF$RH.y)
     outDF$RH.x <- NULL
     
-    outDF$WindSpeed <- ifelse(is.na(outDF$WindSpeed), outDF$WS_ms_Avg, outDF$WindSpeed)
-    outDF$WS_ms_Avg <- NULL
-    outDF$wnd_spd <- NULL
+    outDF$WindSpeed <- ifelse(is.na(outDF$WindSpeed), outDF$WS_ms_Max, outDF$WindSpeed)
+    outDF$WS_ms_Max <- NULL
 
     outDF$Air.Temp <- ifelse(is.na(outDF$Air.Temp), outDF$AirTC_Avg, outDF$Air.Temp)
     outDF$AirTC_Avg <- NULL
@@ -194,7 +193,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     
     ### processing in Martin's code
     out$VPD <- ifelse(out$VPD < 0.05, 0.05, out$VPD)
-    out$Wind <- ifelse(out$Wind <= 0.0, 0.1, out$Wind)
+    out$Wind <- ifelse(out$Wind <= 0.1, 0.1, out$Wind)
+    out$Wind <- ifelse(is.na(outDF$Wind), 0.1, outDF$Wind)
     
     ### correction
     #out$SWdown <- out$SWdown - 124.72
@@ -229,6 +229,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     colnames(headDF) <- var.list
     rownames(headDF) <- NULL
     
+    timestep = "daily"
     ### decide what timestep to output
     if(timestep == "half_hourly") {
 

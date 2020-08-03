@@ -33,9 +33,16 @@ prepare_co2_data <- function() {
     
     
     ## half hourly data
-    outDF4 <- summaryBy(WindSpeed+Air.Temp+Concentration.1Min+IRGA.Vapor.Pressure+IRGA.Pressure+PPFD~Date+Hour+HalfHour+Ring, 
-                        FUN=mean,
+    outDF1 <- summaryBy(WindSpeed~Date+Hour+HalfHour+Ring, 
+                        FUN=max,
                         data=myDF4, keep.names=T, na.rm=T)
+    
+    outDF2 <- summaryBy(Air.Temp+Concentration.1Min+IRGA.Vapor.Pressure+IRGA.Pressure+PPFD~Date+Hour+HalfHour+Ring, 
+              FUN=mean,
+              data=myDF4, keep.names=T, na.rm=T)
+    
+    outDF4 <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour", "Ring"), all=T)
+    
     
     outDF4$RH <- outDF4$IRGA.Vapor.Pressure/saturate_vp_func(outDF4$Air.Temp)
     

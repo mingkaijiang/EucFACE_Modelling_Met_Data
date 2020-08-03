@@ -18,11 +18,17 @@ prepare_ros_table05_data <- function() {
     myDF2$HalfHour <- ifelse(myDF2$Minute > 30, "30", "00")
     
     ## half hourly data
-    outDF2 <- summaryBy(PPFD_Avg+AirTC_Avg+RH+WS_ms_Avg+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
+    outDF1 <- summaryBy(PPFD_Avg+AirTC_Avg+RH+NetSW_Avg+NetLW_Avg+NetRad_Avg~Date+Hour+HalfHour, 
                         FUN=mean,
                         data=myDF2, keep.names=T, na.rm=T)
     
-    write.csv(outDF2, "output/observed/input/ros_table05_data.csv", row.names=F)
+    outDF2 <- summaryBy(WS_ms_Max~Date+Hour+HalfHour, 
+                        FUN=max,
+                        data=myDF2, keep.names=T, na.rm=T)
     
-    return(outDF2)
+    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
+    
+    write.csv(outDF, "output/observed/input/ros_table05_data.csv", row.names=F)
+    
+    return(outDF)
 }
