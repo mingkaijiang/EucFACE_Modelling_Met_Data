@@ -1,8 +1,33 @@
 prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     #### Note: prepare observed data (2012 - 2019)
  
+    ## create a new outDF to store all data time series
+    time.series <- seq(as.Date("2012-01-01"), as.Date("2019-12-31"), by = "day")
+    hour.series <- c("00", "00", "01", "01", "02", "02", "03", "03",
+                     "04", "04", "05", "05", "06", "06", "07", "07",
+                     "08", "08", "09", "09", "10", "10", "11", "11",
+                     "12", "12", "13", "13", "14", "14", "15", "15",
+                     "16", "16", "17", "17", "18", "18", "19", "19",
+                     "20", "20", "21", "21", "22", "22", "23", "23")
+    minute.series <- c("00", "30")
+    
+    l <- length(time.series)
+    act.hour.series <- seq(0.5, 24, by=0.5)
+    
+    outDF <- data.frame(rep(time.series, each = 48),
+                        rep(hour.series, l),
+                        rep(minute.series, 24*l),
+                        rep(act.hour.series, l))
+    
+    colnames(outDF) <- c("Date", "Hour", "HalfHour", "ActHour")
+    
+    outDF$Date <- as.Date(outDF$Date)
+    outDF$Hour <- as.numeric(as.character(outDF$Hour))
+    outDF$HalfHour <- as.numeric(as.character(outDF$HalfHour))
+    outDF$ActHour <- as.numeric(outDF$ActHour)
+    
+    
     #######################################################################################
-
     if (run.option == "rerun") {
         outDF1 <- read.csv("output/observed/input/ros_table15_data.csv")
         outDF2 <- read.csv("output/observed/input/ros_table05_data.csv")
@@ -11,8 +36,8 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         outDF5 <- read.csv("output/observed/input/prepare_soil_data.csv")
         
     } else if (run.option == "newrun") {
-        ### ROS station Rain_mm_Tot, SoilTempROS, ASoilTemp_Avg
-        ## half hourly rainfall data
+        ### ROS station Rain_mm_Tot, ASoilTemp_Avg
+        ## half hourly data
         outDF1 <- prepare_ros_table15_data()
         
         ### ROS station PPFD_Avg, AirTC_Avg, RH, WS_ms_Avg, NetSW_Avg, NetLW_Avg, NetRad_Avg
@@ -31,11 +56,40 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     }
     
     
+    
+    
     #######################################################################################
+    ### prepare outDF with correct date period
+    outDF1$Date <- as.Date(as.character(outDF1$Date))
+    outDF2$Date <- as.Date(as.character(outDF2$Date))
+    outDF3$Date <- as.Date(as.character(outDF3$Date))
+    outDF4$Date <- as.Date(as.character(outDF4$Date))
+    outDF5$Date <- as.Date(as.character(outDF5$Date))
+    
+    outDF1$Hour <- as.numeric(as.character(outDF1$Hour))
+    outDF2$Hour <- as.numeric(as.character(outDF2$Hour))
+    outDF3$Hour <- as.numeric(as.character(outDF3$Hour))
+    outDF4$Hour <- as.numeric(as.character(outDF4$Hour))
+    outDF5$Hour <- as.numeric(as.character(outDF5$Hour))
+    
+    outDF1$HalfHour <- as.numeric(as.character(outDF1$HalfHour))
+    outDF2$HalfHour <- as.numeric(as.character(outDF2$HalfHour))
+    outDF3$HalfHour <- as.numeric(as.character(outDF3$HalfHour))
+    outDF4$HalfHour <- as.numeric(as.character(outDF4$HalfHour))
+    outDF5$HalfHour <- as.numeric(as.character(outDF5$HalfHour))
+
+    
     ### merge the two datasets
-    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF <- merge(outDF, outDF1, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF <- merge(outDF, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF3, by=c("Date", "Hour", "HalfHour"), all=T)
     outDF <- merge(outDF, outDF4, by=c("Date", "Hour", "HalfHour"), all=T)
+    outDF <- merge(outDF, outDF5, by=c("Date","Hour","HalfHour"), all=T)
+    
+    
+    test$ID <- paste0(test$Date, "-", test$Hour, "-", test$HalfHour)
+    test2 <- unique(test$ID)
+    length(test2)
     
     ### fill data gaps
     outDF$RH.y <- ifelse(is.na(outDF$RH.y), outDF$RH.x, outDF$RH.y)
@@ -63,8 +117,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     outDF$Pressure_kPa <- NULL
     outDF$Pressure_Pa <- NULL
     
-    outDF$SoilTemp <- ifelse(is.na(outDF$SoilTemp), outDF$ASoilTemp_Avg, outDF$SoilTemp)
-    outDF$SoilTempROS <- NULL
+    outDF$SoilTemp <- outDF$ASoilTemp_Avg #ifelse(is.na(outDF$SoilTemp), outDF$ASoilTemp_Avg, outDF$SoilTemp)
     outDF$ASoilTemp_Avg <- NULL
     
     
@@ -129,7 +182,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     
     #######################################################################################
     ### merge
-    outDF6 <- merge(outDF, outDF5, by=c("Date","Hour","HalfHour"), all=T)
+    outDF6 <- outDF
     
     ## order
     outDF6 <- outDF6[order(outDF6$Date, outDF6$Hour, outDF6$HalfHour),]

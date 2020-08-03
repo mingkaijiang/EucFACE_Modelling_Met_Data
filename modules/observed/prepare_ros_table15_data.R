@@ -21,11 +21,18 @@ prepare_ros_table15_data <- function() {
     myDF1$SoilTempROS <- rowMeans(myDF1[c("SoilTemp_Avg.1.", "SoilTemp_Avg.2.")], na.rm=TRUE)
     
     ## half hourly rainfall data
-    outDF1 <- summaryBy(Rain_mm_Tot+SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=sum,
+    outDF1 <- summaryBy(Rain_mm_Tot~Date+Hour+HalfHour, FUN=sum,
                         data=myDF1, keep.names=T, na.rm=T)
     
+    ## half hourly temperature
+    outDF2 <- summaryBy(SoilTempROS+ASoilTemp_Avg~Date+Hour+HalfHour, FUN=mean,
+                        data=myDF1, keep.names=T, na.rm=T)
     
-    write.csv(outDF1, "output/observed/input/ros_table15_data.csv", row.names=F)
+    outDF <- merge(outDF1, outDF2, by=c("Date", "Hour", "HalfHour"), all=T)
     
-    return(outDF1)
+    outDF$SoilTempROS <- NULL
+    
+    write.csv(outDF, "output/observed/input/ros_table15_data.csv", row.names=F)
+    
+    return(outDF)
 }

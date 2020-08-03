@@ -20,8 +20,14 @@ prepare_r3_flux_data <- function() {
     outDF3$Pressure_kPa <- outDF3$Pressure_hPa_Avg / 10
     outDF3$Pressure_Pa <- outDF3$Pressure_hPa_Avg * 100
     
-    ### write
-    write.csv(outDF3, "output/observed/input/r3_flux_data.csv", row.names=F)    
+    outDF3$ID <- paste0(outDF3$Date, "-", outDF3$Hour, "-", outDF3$HalfHour)
     
-    return(outDF3)
+    outDF <- outDF3[!duplicated(outDF3$ID), ]
+    
+    outDF$ID <- NULL
+    
+    ### write
+    write.csv(outDF, "output/observed/input/r3_flux_data.csv", row.names=F)    
+    
+    return(outDF)
 }
