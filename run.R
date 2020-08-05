@@ -154,4 +154,15 @@ check_GDAY_met_data_quality()
 move_all_met_data_into_GDAY_simulation_folders()
 
 
+
+###########################################################################
+###                  Step 4: create validation dataset                  ###
+###                                                                     ###
+###########################################################################
+#### Create time-series leaf LAI validation dataset (2013 - 2016)
+make_lai_validation_dataset()
+
+#### Create time-series soil respiration validation dataset (2013 - 2015)
+
+
 ###########################################################################

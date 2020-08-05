@@ -35,7 +35,8 @@ output.folders <- c("output",
                     #"output/predicted/netcdf/daily",
                     #"output/predicted/netcdf/half_hourly",
                     "output/GDAY",
-                    "output/GDAY/quality_check")
+                    "output/GDAY/quality_check",
+                    "output/validation_datasets")
 
 #### Create output folder
 for (y in output.folders) {
