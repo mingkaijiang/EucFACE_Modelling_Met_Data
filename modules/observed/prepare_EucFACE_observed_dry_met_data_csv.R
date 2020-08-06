@@ -1,4 +1,4 @@
-prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
+prepare_EucFACE_observed_dry_met_data_csv <- function(run.option) {
     #### Note: prepare observed data (2012 - 2019)
  
     ## create a new outDF to store all data time series
@@ -214,7 +214,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
     rownames(headDF) <- NULL
     
     ### decide what timestep to output
-    if(timestep == "half_hourly") {
+    #if(timestep == "half_hourly") {
 
         write.table(headDF, "output/observed/csv/half_hourly/EUC_met_observed_dry_half_hourly_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
@@ -223,7 +223,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
-    } else if(timestep == "daily") {
+    #} else if(timestep == "daily") {
         
         ### calculate total rainfall of the day
         dDF1 <- summaryBy(Rain~YEAR+DOY, FUN=sum, data=out, keep.names=T)
@@ -266,7 +266,7 @@ prepare_EucFACE_observed_dry_met_data_csv <- function(timestep, run.option) {
         
         write.table(outDF8, "output/observed/csv/daily/EUC_met_observed_dry_daily_2012_2019.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
-    }
+    #}
     
     
     

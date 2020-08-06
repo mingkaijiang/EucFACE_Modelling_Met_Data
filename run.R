@@ -31,47 +31,45 @@ source("prepare.R")
 ####                 observed - OBS (2013 - 2019)
 ####                 prdicted - PRD (2020 - 2069)
 
-###########################################################################
-#### Step 2.1. prepare spin-up data
-#### weather data: recycle Martin's 50 year equilibrium weather data
-#### which we name as period 1700-1749
-### note that leap days are removed.
-
-### csv
-prepare_EucFACE_spinup_met_data_csv(timestep="half_hourly")
-
-prepare_EucFACE_spinup_met_data_csv(timestep="daily")
-
+#### We use real observed period met data (2013 - 2019) for observed scenarios,
+#### We randomly select observed data for predicted scenarios
+#### We use observed + a historic spin-up dataset to create spin-up and historic period dataset
+#### For Predicted CO2, aCO2 rise steadily following a 3 ppm yr-1 rate for the next 50-yrs
+###                     eCO2 rise for 10 yrs, then stay fixed. 
+#### N deposition is the same as the 2019 value for future period
 
 ###########################################################################
-#### Step 2.2. prepare historic data (1992 - 2011)
-#### weather data: recycle Martin's 1992 - 2011 weather data
-#### CO2, N and P deposition: realistic data over 1750 - 2012
-
-### csv
-prepare_EucFACE_historic_met_data_csv(timestep="half_hourly")
-
-prepare_EucFACE_historic_met_data_csv(timestep="daily")
-
-
-###########################################################################
-#### Step 2.2. prepare 7-year simulation data (2013 - 2019)
+#### Step 2.1. prepare 7-year simulation data (2013 - 2019)
 #### 4 scenarios: 
 ####             OBS_WET_AMB_NOP: aCO2, wet (recycle wet year)
 ####             OBS_WET_ELE_NOP: eCO2, wet (recycle wet year)
 ####             OBS_DRY_AMB_NOP: aCO2, dry (realistic weather)
 ####             OBS_DRY_ELE_NOP: eCO2, dry (realsitic weather)
 
-#### dry
-prepare_EucFACE_observed_dry_met_data_csv(timestep="half_hourly", run.option="rerun")
-prepare_EucFACE_observed_dry_met_data_csv(timestep="daily", run.option="rerun")
+#### dry - returns both daily and half-hourly data
+prepare_EucFACE_observed_dry_met_data_csv(run.option="rerun")
+
 
 #### wet
 prepare_EucFACE_observed_wet_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_observed_wet_met_data_csv(timestep="daily")
 
+
+###########################################################################
+#### Step 2.2. prepare spin-up and historic data
+#### weather data: recycle 27-year of data (20-yr data + observed 7 year data at EucFACE)
+#### spin-up period data: 50-yr, 1700-1749
+#### historic period data: 262-year, 1750-2011
+#### note that leap days are removed
+#### Output includes both daily and half-hourly data
+#### Daily data has PAR condition in it.
+### csv
+prepare_EucFACE_spinup_met_data_csv()
+
+
 ###########################################################################
 #### Step 2.3. Prepare 50-year future prediction data
+#### Only recycle the 7-year observed dataset
 
 #### 12 scenarios: 
 ####             PRD_WET_AMB_NOP: aCO2, wet, no P added
