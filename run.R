@@ -164,5 +164,10 @@ make_lai_validation_dataset()
 
 #### Create time-series soil respiration validation dataset (2013 - 2015)
 
+#### Make SLA parameters
+make_sla_parameter()
+
+#### Make leaf N and P concentration parameters
+make_leaf_nutrient_concentration_parameter()
 
 ###########################################################################
