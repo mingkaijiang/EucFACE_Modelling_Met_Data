@@ -163,11 +163,15 @@ move_all_met_data_into_GDAY_simulation_folders()
 make_lai_validation_dataset()
 
 #### Create time-series soil respiration validation dataset (2013 - 2015)
+make_Rsoil_validation_dataset()
 
 #### Make SLA parameters
 make_sla_parameter()
 
 #### Make leaf N and P concentration parameters
 make_leaf_nutrient_concentration_parameter()
+
+### Photosynthetic parameters
+make_g1_parameter()
 
 ###########################################################################
