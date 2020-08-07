@@ -152,10 +152,10 @@ prepare_EucFACE_spinup_met_data_csv <- function() {
         
         
     #### Historic
-    write.table(headDF, "output/spinup/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
+    write.table(headDF, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
                 col.names=T, row.names=F, sep=",", append=F, quote = F)
     
-    write.table(histDF, "output/spinup/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
+    write.table(histDF, "output/historic/csv/half_hourly/EUC_met_historic_half_hourly_1750_2011.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         

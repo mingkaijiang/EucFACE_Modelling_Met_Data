@@ -49,11 +49,13 @@ source("prepare.R")
 #### dry - returns both daily and half-hourly data
 prepare_EucFACE_observed_dry_met_data_csv(run.option="rerun")
 
-
 #### wet
 prepare_EucFACE_observed_wet_met_data_csv(timestep="half_hourly")
 prepare_EucFACE_observed_wet_met_data_csv(timestep="daily")
 
+
+#### validation
+check_daily_hourly_match(data.period = "obs")
 
 ###########################################################################
 #### Step 2.2. prepare spin-up and historic data
@@ -66,6 +68,10 @@ prepare_EucFACE_observed_wet_met_data_csv(timestep="daily")
 ### csv
 prepare_EucFACE_spinup_met_data_csv()
 
+#### validation
+check_daily_hourly_match(data.period = "spinup")
+
+check_daily_hourly_match(data.period = "historic")
 
 ###########################################################################
 #### Step 2.3. Prepare 50-year future prediction data
