@@ -149,7 +149,7 @@ prepare_GDAY_predicted_wet_data()
 ###                                                                     ###
 ###########################################################################
 #### check data quality
-check_met_data_quality()
+check_met_data_consistency_across_periods()
 
 check_GDAY_met_data_quality()
 
