@@ -166,7 +166,7 @@ prepare_EucFACE_spinup_met_data_csv <- function() {
         
         
     ### extract daytime DF
-    subDF <- subset(outDF2, PAR > 0.0)
+    subDF <- subset(outDF2, PAR >= 5.0)
         
     dDF2 <- summaryBy(SWdown+PAR+LWdown+Tair+VPD+RH+Wind+PSurf+CO2air+SoilTemp+Ndep~YEAR+DOY,
                       FUN=mean, data=subDF, keep.names=T)
