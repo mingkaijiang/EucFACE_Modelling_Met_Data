@@ -26,6 +26,12 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         ### assign new year list
         outDF$YEAR <- yr.list2
         
+        ### assign CO2 and Ndep
+        myDF <- subset(myDF, DOY < 366)
+        outDF$CO2ambient <- myDF$CO2ambient
+        outDF$CO2elevated <- myDF$CO2elevated
+        outDF$Ndep <- myDF$Ndep
+        
         ### add unit and name list
         unit.list <- c("year", "day", "hour", "W m-2", "umol m-2 s-1", "W m-2", "K", "mm halfhour-1",
                        "Pa", "%", "m s-1", "Pa", "ppmv", "ppmv", "K", "g N m-2 yr-1")
@@ -82,6 +88,13 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         
         ### assign new year list
         outDF$YEAR <- yr.list2
+        
+        ### assign CO2 and Ndep
+        myDF <- subset(myDF, DOY < 366)
+        outDF$CO2ambient <- myDF$CO2ambient
+        outDF$CO2elevated <- myDF$CO2elevated
+        outDF$Ndep <- myDF$Ndep
+        
         
         write.table(headDF, "output/observed/csv/daily/EUC_met_observed_wet_daily_2012_2019.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
