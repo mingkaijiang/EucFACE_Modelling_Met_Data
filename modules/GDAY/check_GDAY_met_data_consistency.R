@@ -89,4 +89,6 @@ check_GDAY_met_data_consistency <- function()  {
     
     
     
+    #### check on Ndep, Pdep, and CO2 concentrations
+    
 }
