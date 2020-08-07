@@ -148,10 +148,11 @@ prepare_GDAY_predicted_wet_data()
 ###                     Step 3: check met data quality                  ###
 ###                                                                     ###
 ###########################################################################
-#### check data quality
+#### check data quality of the original met data
 check_met_data_consistency_across_periods()
 
-check_GDAY_met_data_quality()
+#### check GDAY input met data consistency
+check_GDAY_met_data_consistency()
 
 
 #### move all GDAY met files to the simulation folder
