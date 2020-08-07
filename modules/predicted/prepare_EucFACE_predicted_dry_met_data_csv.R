@@ -41,13 +41,6 @@ prepare_EucFACE_predicted_dry_met_data_csv <- function(timestep) {
     set.seed(123)
     yr.list <- sample(2012:2019, 50, replace=T)
     
-    ### read N deposition and CO2 data
-    #ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
-    #colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
-    #ndepDF$elevatedCO2 <- NULL
-    #ndepDF$Ndep <- ndepDF$Ndep / 10
-    
-    
     ### decide what timestep to output
     if(timestep == "half_hourly") {
 
@@ -75,22 +68,25 @@ prepare_EucFACE_predicted_dry_met_data_csv <- function(timestep) {
         
         ### assign new year list
         outDF$YEAR <- yr.list2
-
-        out <- outDF
-        #out <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
-        #
-        #out$Ndep.x <- out$Ndep.y
-        #out$Ndep.y <- NULL
-        #out$CO2ambient <- out$CO2air
-        #out$CO2elevated <- out$CO2air+150
-        #out$CO2air <- NULL
-        #names(out)[names(out) == 'Ndep.x'] <- 'Ndep'
         
+        
+        ### update fixed N deposition data
+        fixed.ndep.value <- unique(myDF[myDF$YEAR==2019, "Ndep"])
+        outDF$Ndep <- fixed.ndep.value
+        
+        ### update CO2 values
+        fixed.co2.value <- unique(myDF[myDF$YEAR==2019, "CO2ambient"]) + 3
+        fixed.co2.series <- seq(from = fixed.co2.value, to = (fixed.co2.value+3*49), by=3)
+        outDF$CO2ambient <- rep(fixed.co2.series, each = (48*365))
+        outDF$CO2elevated <- outDF$CO2ambient + 150
+        fixed.eCO2.value <- unique(outDF[outDF$YEAR == 2029, "CO2elevated"])
+        outDF$CO2elevated <- ifelse(outDF$YEAR > 2029, fixed.eCO2.value, outDF$CO2elevated)
 
+        ### save
         write.table(headDF.hour, "output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(out, "output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv",
+        write.table(outDF, "output/predicted/csv/half_hourly/EUC_predicted_dry_met_half_hourly_2020_2069.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
@@ -122,20 +118,24 @@ prepare_EucFACE_predicted_dry_met_data_csv <- function(timestep) {
         ### assign new year list
         outDF$YEAR <- yr.list2
         
-        #out <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
-        out <- outDF
-        #out$Ndep.x <- out$Ndep.y
-        #out$Ndep.y <- NULL
-        #out$CO2ambient <- out$CO2air
-        #out$CO2elevated <- out$CO2air+150
-        #names(out)[names(out) == 'Ndep.x'] <- 'Ndep'
-        #out$CO2air <- NULL
+        
+        ### update fixed N deposition data
+        fixed.ndep.value <- unique(myDF[myDF$YEAR==2019, "Ndep"])
+        outDF$Ndep <- fixed.ndep.value
+        
+        ### update CO2 values
+        fixed.co2.value <- unique(myDF[myDF$YEAR==2019, "CO2ambient"]) + 3
+        fixed.co2.series <- seq(from = fixed.co2.value, to = (fixed.co2.value+3*49), by=3)
+        outDF$CO2ambient <- rep(fixed.co2.series, each = 365)
+        outDF$CO2elevated <- outDF$CO2ambient + 150
+        fixed.eCO2.value <- unique(outDF[outDF$YEAR == 2029, "CO2elevated"])
+        outDF$CO2elevated <- ifelse(outDF$YEAR > 2029, fixed.eCO2.value, outDF$CO2elevated)
         
         
         write.table(headDF.day, "output/predicted/csv/daily/EUC_predicted_dry_met_daily_2020_2069.csv",
                     col.names=T, row.names=F, sep=",", append=F, quote = F)
         
-        write.table(out, "output/predicted/csv/daily/EUC_predicted_dry_met_daily_2020_2069.csv",
+        write.table(outDF, "output/predicted/csv/daily/EUC_predicted_dry_met_daily_2020_2069.csv",
                     col.names=F, row.names=F, sep=",", append=T, quote = F)
         
         
