@@ -26,9 +26,11 @@ prepare_GDAY_historic_data_based_on_observed_data_only <- function() {
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp", "Ndep")
+                  "CO2air", "CO2elevated", "SoilTemp", "Ndep")
     
     colnames(myDF) <- var.list
+    
+    myDF$CO2elevated <- NULL
     
     ### convert unit
     ## VPD from Pa to kPa
@@ -149,6 +151,33 @@ prepare_GDAY_historic_data_based_on_observed_data_only <- function() {
     ### re-assign year information
     outDF$YEAR <- rep(c(1750:2011), each=365)
     
+    ### revise N dep and CO2 data
+    outDF$Ndep <- NA
+    outDF$CO2air <- NA
+    
+    ### read in ndep and co2 data
+    ndepDF <- read.table("tmp_data/EucFACE_forcing_daily_CO2NDEP_1750-2023.dat", header=T)
+    colnames(ndepDF) <- c("YEAR", "DOY", "CO2air", "elevatedCO2", "Ndep")
+    ndepDF$elevatedCO2 <- NULL
+    
+    ### convert unit to t ha-1 d-1
+    ndepDF$Ndep <- ndepDF$Ndep / 10 / 365 / 100
+    
+    ### add n deposition  data for the period of 1992 to 2011
+    outDF2 <- merge(outDF, ndepDF, by=c("YEAR", "DOY"), all.x=T)
+    outDF2$Ndep <- ifelse(is.na(outDF2$Ndep.y), outDF2$Ndep.x, outDF2$Ndep.y)
+    outDF2$CO2air <- ifelse(is.na(outDF2$CO2air.y), outDF2$CO2air.x, outDF2$CO2air.y)
+    
+    outDF2$CO2air.x <- NULL
+    outDF2$CO2air.y <- NULL
+    outDF2$Ndep.x <- NULL
+    outDF2$Ndep.y <- NULL
+    
+    outDF2 <- outDF2[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
+                        "Tam", "Tpm", "Tair.min", "Tair.max",
+                        "Tday", "VPD_am", "VPD_pm", "CO2air",
+                        "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                        "Wind_pm", "PAR_am", "PAR_pm")]
     
     ### output
     write.table(head.list, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
@@ -160,7 +189,7 @@ prepare_GDAY_historic_data_based_on_observed_data_only <- function() {
     write.table(outname.list, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
-    write.table(outDF, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
+    write.table(outDF2, "output/GDAY/EUC_met_historic_daily_1750_2011.csv",
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
     

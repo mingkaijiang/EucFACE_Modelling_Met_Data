@@ -26,9 +26,11 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     ### generate variable name and unit list
     var.list <- c("YEAR", "DOY", "HOUR", "SWdown", "PAR", "LWdown",
                   "Tair", "Rain", "VPD", "RH", "Wind", "PSurf",
-                  "CO2air", "SoilTemp", "Ndep")
+                  "CO2air", "CO2elevated", "SoilTemp", "Ndep")
     
     colnames(myDF) <- var.list
+    
+    myDF$CO2elevated <- NULL
     
     ### convert unit
     ## VPD from Pa to kPa
@@ -36,6 +38,12 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     
     ## PSurf from Pa to Kpa
     myDF$PSurf <- myDF$PSurf / 1000
+    
+    ### revise N deposition
+    myDF$Ndep <- 0.225 
+    
+    ### revise CO2 concentration
+    myDF$CO2air <-  276.84
     
     ## remove leap year and keep only 20 years of data
     myDF <- subset(myDF, DOY <= 365)
@@ -148,7 +156,6 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     
     ### re-assign year information
     outDF$YEAR <- rep(c(1700:1749), each=365)
-    
     
     ### output
     write.table(head.list, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",
