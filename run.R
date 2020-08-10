@@ -111,9 +111,11 @@ prepare_EucFACE_predicted_wet_met_data_csv(timestep="daily")
 ###########################################################################
 #### prepare GDAY spinup data
 prepare_GDAY_spinup_data()
+prepare_GDAY_spinup_data_based_on_observed_data_only()
 
 #### prepare GDAY historic data (1750 to 2011)
 prepare_GDAY_historic_data()
+prepare_GDAY_historic_data_based_on_observed_data_only()
 
 #### prepare GDAY observed data (2012 - 2019)
 #### under 4 scenarios
