@@ -5,13 +5,13 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     ### prepare output data variable names, units
     outname.list <- cbind("#year", "doy", "tair", "rain", "tsoil", "tam", "tpm",
                           "tmin", "tmax", "tday", "vpd_am", "vpd_pm", "CO2",
-                          "ndep", "nfix", "pdep", "wind", "pres", "wind_am",
+                          "ndep", "nfix", "pdep", "pfert", "wind", "pres", "wind_am",
                           "wind_pm", "par_am", "par_pm")
     
     ### add unit and name list
     unit.list <- cbind("#-", "-", "c", "mm", "c", "c", "c", "c", "c", "c",
-                       "kPa", "kPa", "ppm", "t/ha/day", "t/ha/day", "t/ha/day",
-                       "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
+                       "kPa", "kPa", "ppm", "t/ha/day", "t/ha/day", "t/ha/day", 
+                       "t/ha/day", "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
     
     ### add column headers
     head.list <- rbind("#EUC daily met forcing",
@@ -114,11 +114,13 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     dDF$Ndep <- dDF$Ndep / 365
     dDF$Pdep <- dDF$Pdep / 365
     
+    dDF$Pfert <- 0.0
+    
     
     dDF <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                   "Tam", "Tpm", "Tair.min", "Tair.max",
                   "Tday", "VPD_am", "VPD_pm", "CO2air",
-                  "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                  "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                   "Wind_pm", "PAR_am", "PAR_pm")]
     
     ### convert units

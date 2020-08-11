@@ -5,13 +5,13 @@ prepare_GDAY_observed_wet_data <- function() {
     ### prepare output data variable names, units
     outname.list <- cbind("#year", "doy", "tair", "rain", "tsoil", "tam", "tpm",
                           "tmin", "tmax", "tday", "vpd_am", "vpd_pm", "CO2",
-                          "ndep", "nfix", "pdep", "wind", "pres", "wind_am",
+                          "ndep", "nfix", "pdep", "pfert", "wind", "pres", "wind_am",
                           "wind_pm", "par_am", "par_pm")
     
     ### add unit and name list
     unit.list <- cbind("#-", "-", "c", "mm", "c", "c", "c", "c", "c", "c",
                        "kPa", "kPa", "ppm", "t/ha/day", "t/ha/day", "t/ha/day",
-                       "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
+                       "t/ha/day", "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
     
     ### add column headers
     head.list <- rbind("#EUC daily met forcing",
@@ -108,10 +108,13 @@ prepare_GDAY_observed_wet_data <- function() {
     dDF$Ndep <- dDF$Ndep / 365
     dDF$Pdep <- dDF$Pdep / 365
     
+    ### P fertilizer
+    dDF$Pfert <- 0.0
+    
     dDF <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                   "Tam", "Tpm", "Tair.min", "Tair.max",
                   "Tday", "VPD_am", "VPD_pm", "CO2ambient", "CO2elevated",
-                  "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                  "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                   "Wind_pm", "PAR_am", "PAR_pm")]
     
     ### convert units
@@ -139,7 +142,7 @@ prepare_GDAY_observed_wet_data <- function() {
     outDF1 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2ambient", 
-                     "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                     "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                      "Wind_pm", "PAR_am", "PAR_pm")]
     names(outDF1)[names(outDF1) == 'CO2ambient'] <- "CO2air"
     
@@ -148,7 +151,7 @@ prepare_GDAY_observed_wet_data <- function() {
     outDF2 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2elevated", 
-                     "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                     "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                      "Wind_pm", "PAR_am", "PAR_pm")]
     names(outDF2)[names(outDF2) == 'CO2elevated'] <- "CO2air"
     

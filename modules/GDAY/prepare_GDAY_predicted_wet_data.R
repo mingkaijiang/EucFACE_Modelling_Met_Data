@@ -5,13 +5,13 @@ prepare_GDAY_predicted_wet_data <- function() {
     ### prepare output data variable names, units
     outname.list <- cbind("#year", "doy", "tair", "rain", "tsoil", "tam", "tpm",
                           "tmin", "tmax", "tday", "vpd_am", "vpd_pm", "CO2",
-                          "ndep", "nfix", "pdep", "wind", "pres", "wind_am",
+                          "ndep", "nfix", "pdep", "pfert", "wind", "pres", "wind_am",
                           "wind_pm", "par_am", "par_pm")
     
     ### add unit and name list
     unit.list <- cbind("#-", "-", "c", "mm", "c", "c", "c", "c", "c", "c",
                        "kPa", "kPa", "ppm", "t/ha/day", "t/ha/day", "t/ha/day",
-                       "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
+                       "t/ha/day", "m/s", "kPa", "m/s", "m/s", "mj/m2/am", "mj/m2/pm")
     
     ### add column headers
     head.list <- rbind("#EUC daily met forcing",
@@ -108,10 +108,13 @@ prepare_GDAY_predicted_wet_data <- function() {
     dDF$Ndep <- dDF$Ndep / 365
     dDF$Pdep <- dDF$Pdep / 365
     
+    ### P fertilizer
+    dDF$Pfert <- 0.0
+    
     dDF <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                   "Tam", "Tpm", "Tair.min", "Tair.max",
                   "Tday", "VPD_am", "VPD_pm", "CO2ambient", "CO2elevated",
-                  "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                  "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                   "Wind_pm", "PAR_am", "PAR_pm")]
     
     ### convert units
@@ -139,7 +142,7 @@ prepare_GDAY_predicted_wet_data <- function() {
     outDF1 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2ambient", 
-                     "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                     "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                      "Wind_pm", "PAR_am", "PAR_pm")]
     names(outDF1)[names(outDF1) == 'CO2ambient'] <- "CO2air"
     
@@ -148,7 +151,7 @@ prepare_GDAY_predicted_wet_data <- function() {
     outDF2 <- dDF[,c("YEAR", "DOY", "Tair", "Rain", "SoilTemp",
                      "Tam", "Tpm", "Tair.min", "Tair.max",
                      "Tday", "VPD_am", "VPD_pm", "CO2elevated", 
-                     "Ndep", "Nfix", "Pdep", "Wind", "PSurf", "Wind_am",
+                     "Ndep", "Nfix", "Pdep", "Pfert", "Wind", "PSurf", "Wind_am",
                      "Wind_pm", "PAR_am", "PAR_pm")]
     names(outDF2)[names(outDF2) == 'CO2elevated'] <- "CO2air"
     
@@ -158,29 +161,29 @@ prepare_GDAY_predicted_wet_data <- function() {
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF3 <- outDF1
-    outDF3$Pdep[outDF3$YEAR%in%c("2020","2021","2022")&outDF3$DOY=="1"] <- (0.5 / 100)+
-        outDF3$Pdep[outDF3$YEAR=="2020"&outDF3$DOY=="1"]
+    outDF3$Pfert[outDF3$YEAR%in%c("2020","2021","2022")&outDF3$DOY=="1"] <- (0.5 / 100)+
+        outDF3$Pfert[outDF3$YEAR=="2020"&outDF3$DOY=="1"]
     
     ## outDF4: elevated CO2, wet climate, middle P addition
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF4 <- outDF2
-    outDF4$Pdep[outDF4$YEAR%in%c("2020","2021","2022")&outDF4$DOY=="1"] <- (0.5 / 100)+
-        outDF4$Pdep[outDF4$YEAR=="2020"&outDF4$DOY=="1"]
+    outDF4$Pfert[outDF4$YEAR%in%c("2020","2021","2022")&outDF4$DOY=="1"] <- (0.5 / 100)+
+        outDF4$Pfert[outDF4$YEAR=="2020"&outDF4$DOY=="1"]
     
     ## outDF5: ambient CO2, wet climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF5 <- outDF1
-    outDF5$Pdep[outDF5$YEAR%in%c("2020","2021","2022")&outDF5$DOY=="1"] <- (1.0 / 100)+
-        outDF5$Pdep[outDF5$YEAR=="2020"&outDF5$DOY=="1"]
+    outDF5$Pfert[outDF5$YEAR%in%c("2020","2021","2022")&outDF5$DOY=="1"] <- (1.0 / 100)+
+        outDF5$Pfert[outDF5$YEAR=="2020"&outDF5$DOY=="1"]
     
     ## outDF6: elevated CO2, wet climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF6 <- outDF2
-    outDF6$Pdep[outDF6$YEAR%in%c("2020","2021","2022")&outDF6$DOY=="1"] <- (1.0 / 100)+
-        outDF6$Pdep[outDF6$YEAR=="2020"&outDF6$DOY=="1"]
+    outDF6$Pfert[outDF6$YEAR%in%c("2020","2021","2022")&outDF6$DOY=="1"] <- (1.0 / 100)+
+        outDF6$Pfert[outDF6$YEAR=="2020"&outDF6$DOY=="1"]
     
     ### output DF 1
     write.table(head.list, "output/GDAY/EUC_met_WET_AMB_NOP_daily_2020_2069.csv",
