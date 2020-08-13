@@ -71,13 +71,15 @@ prepare_EucFACE_spinup_met_data_csv <- function() {
     myDF$CO2air <- 276.84
     myDF$Ndep <- 0.225 
     
+    myDF <- subset(myDF, YEAR < 2019)
+    
     ########################################################################
     ### merge the two dataset
     totDF <- rbind(inDF, myDF)
     
     ### generate a random year list
     set.seed(123)
-    yr.list <- sample(1992:2019, (50+262), replace=T)
+    yr.list <- sample(1992:2018, (50+262), replace=T)
     
     ### prepare output DF
     outDF <- c()
@@ -218,3 +220,4 @@ prepare_EucFACE_spinup_met_data_csv <- function() {
                 col.names=F, row.names=F, sep=",", append=T, quote = F)
     
 }
+
