@@ -26,8 +26,21 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         ### assign new year list
         outDF$YEAR <- yr.list2
         
-        ### assign CO2 and Ndep
-        myDF <- subset(myDF, DOY < 366)
+        ### add leap year days
+        leapDF <- subset(outDF, YEAR == 2012 & DOY == 365)
+        leapDF$DOY <- 366
+        
+        ### year 2012, 366
+        outDF <- rbind(outDF, leapDF)
+        
+        ### year 2016, 366
+        leapDF$YEAR <- 2016
+        outDF <- rbind(outDF, leapDF)
+        
+        ### order by date
+        outDF <- outDF[order(outDF$YEAR, outDF$DOY, outDF$HOUR),]
+        
+        ### assign time-series CO2 and Ndep
         outDF$CO2ambient <- myDF$CO2ambient
         outDF$CO2elevated <- myDF$CO2elevated
         outDF$Ndep <- myDF$Ndep
@@ -89,8 +102,21 @@ prepare_EucFACE_observed_wet_met_data_csv <- function(timestep) {
         ### assign new year list
         outDF$YEAR <- yr.list2
         
+        ### add leap year days
+        leapDF <- subset(outDF, YEAR == 2012 & DOY == 365)
+        leapDF$DOY <- 366
+        
+        ### year 2012, 366
+        outDF <- rbind(outDF, leapDF)
+        
+        ### year 2016, 366
+        leapDF$YEAR <- 2016
+        outDF <- rbind(outDF, leapDF)
+        
+        ### order by date
+        outDF <- outDF[order(outDF$YEAR, outDF$DOY),]
+        
         ### assign CO2 and Ndep
-        myDF <- subset(myDF, DOY < 366)
         outDF$CO2ambient <- myDF$CO2ambient
         outDF$CO2elevated <- myDF$CO2elevated
         outDF$Ndep <- myDF$Ndep

@@ -97,7 +97,19 @@ prepare_EucFACE_spinup_met_data_csv <- function() {
     
     ### re-assign year information
     outDF$YEAR <- rep(c(1700:2011), each=(48*365))
-
+    
+    #######################################################################################
+    #### re-add leap year into the dataframe
+    leap.yr <- c(1700:2011)[leap_year(c(1700:2011))]
+    
+    
+    for (i in leap.yr) {
+        tmpDF <- subset(outDF, YEAR == i & DOY == 365)
+        tmpDF$DOY <- 366
+        outDF <- rbind(outDF, tmpDF)
+    }
+    
+    outDF <- outDF[order(outDF$YEAR, outDF$DOY, outDF$HOUR),]
     
     #######################################################################################
     ### read N deposition and CO2 data
