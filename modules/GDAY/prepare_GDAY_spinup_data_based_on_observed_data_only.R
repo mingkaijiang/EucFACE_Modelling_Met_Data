@@ -46,7 +46,7 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     myDF$CO2air <-  276.84
     
     ## remove leap year and keep only 20 years of data
-    myDF <- subset(myDF, DOY <= 365)
+    #myDF <- subset(myDF, DOY <= 365)
 
     
     ### calculate daily sum of rainfall
@@ -158,6 +158,20 @@ prepare_GDAY_spinup_data_based_on_observed_data_only <- function() {
     
     ### re-assign year information
     outDF$YEAR <- rep(c(1700:1749), each=365)
+    
+    ### add leap year data back
+    #### re-add leap year into the dataframe
+    leap.yr <- c(1700:1749)[leap_year(c(1700:1749))]
+    
+    
+    for (i in leap.yr) {
+        tmpDF <- subset(outDF, YEAR == i & DOY == 365)
+        tmpDF$DOY <- 366
+        outDF <- rbind(outDF, tmpDF)
+    }
+    
+    outDF <- outDF[order(outDF$YEAR, outDF$DOY),]
+    
     
     ### output
     write.table(head.list, "output/GDAY/EUC_met_spinup_daily_50yrs.csv",

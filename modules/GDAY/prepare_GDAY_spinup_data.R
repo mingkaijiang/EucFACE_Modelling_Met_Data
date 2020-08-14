@@ -38,8 +38,8 @@ prepare_GDAY_spinup_data <- function() {
     myDF$PSurf <- myDF$PSurf / 1000
     
     ## remove leap year and keep only 20 years of data
-    myDF <- subset(myDF, DOY <= 365)
-    myDF$YEAR <- rep(c(1700:1749), each=(365*48))
+    #myDF <- subset(myDF, DOY <= 365)
+    #myDF$YEAR <- rep(c(1700:1749), each=(365*48))
     
     
     ### calculate daily sum of rainfall
@@ -130,7 +130,7 @@ prepare_GDAY_spinup_data <- function() {
     dDF$Pdep <- dDF$Pdep / 100
     
     ## remove leap year and reorder
-    dDF <- subset(dDF, DOY <= 365)
+    #dDF <- subset(dDF, DOY <= 365)
     
     dDF <- dDF[order(dDF$YEAR, dDF$DOY),]
     

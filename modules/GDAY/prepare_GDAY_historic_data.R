@@ -123,7 +123,7 @@ prepare_GDAY_historic_data <- function() {
     dDF$Pdep <- dDF$Pdep / 100
     
     ## remove leap year and reorder
-    dDF <- subset(dDF, DOY <= 365)
+    #dDF <- subset(dDF, DOY <= 365)
     
     dDF <- dDF[order(dDF$YEAR, dDF$DOY),]
     

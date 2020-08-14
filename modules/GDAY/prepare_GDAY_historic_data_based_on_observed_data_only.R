@@ -40,7 +40,7 @@ prepare_GDAY_historic_data_based_on_observed_data_only <- function() {
     myDF$PSurf <- myDF$PSurf / 1000
     
     ## remove leap year and keep only 20 years of data
-    myDF <- subset(myDF, DOY <= 365)
+    #myDF <- subset(myDF, DOY <= 365)
 
     
     ### calculate daily sum of rainfall
@@ -151,6 +151,18 @@ prepare_GDAY_historic_data_based_on_observed_data_only <- function() {
     
     ### re-assign year information
     outDF$YEAR <- rep(c(1750:2011), each=365)
+    
+    #### re-add leap year into the dataframe
+    leap.yr <- c(1700:1749)[leap_year(c(1700:1749))]
+    
+    
+    for (i in leap.yr) {
+        tmpDF <- subset(outDF, YEAR == i & DOY == 365)
+        tmpDF$DOY <- 366
+        outDF <- rbind(outDF, tmpDF)
+    }
+    
+    outDF <- outDF[order(outDF$YEAR, outDF$DOY),]
     
     ### revise N dep and CO2 data
     outDF$Ndep <- NA
