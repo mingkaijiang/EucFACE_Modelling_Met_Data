@@ -161,28 +161,28 @@ prepare_GDAY_predicted_wet_data <- function() {
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF3 <- outDF1
-    outDF3$Pfert[outDF3$YEAR%in%c("2020","2021","2022")&outDF3$DOY=="1"] <- (0.5 / 100)+
+    outDF3$Pfert[outDF3$YEAR%in%c("2020","2021","2022")&outDF3$DOY=="1"] <- (1.0 / 100)+
         outDF3$Pfert[outDF3$YEAR=="2020"&outDF3$DOY=="1"]
     
     ## outDF4: elevated CO2, wet climate, middle P addition
     ## 0.5 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF4 <- outDF2
-    outDF4$Pfert[outDF4$YEAR%in%c("2020","2021","2022")&outDF4$DOY=="1"] <- (0.5 / 100)+
+    outDF4$Pfert[outDF4$YEAR%in%c("2020","2021","2022")&outDF4$DOY=="1"] <- (1.0 / 100)+
         outDF4$Pfert[outDF4$YEAR=="2020"&outDF4$DOY=="1"]
     
     ## outDF5: ambient CO2, wet climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF5 <- outDF1
-    outDF5$Pfert[outDF5$YEAR%in%c("2020","2021","2022")&outDF5$DOY=="1"] <- (1.0 / 100)+
+    outDF5$Pfert[outDF5$YEAR%in%c("2020","2021","2022")&outDF5$DOY=="1"] <- (3.0 / 100)+
         outDF5$Pfert[outDF5$YEAR=="2020"&outDF5$DOY=="1"]
     
     ## outDF6: elevated CO2, wet climate, high P addition
     ## 1.0 g P m-2 yr-1 for first three years
     ## applied once per year at the first date
     outDF6 <- outDF2
-    outDF6$Pfert[outDF6$YEAR%in%c("2020","2021","2022")&outDF6$DOY=="1"] <- (1.0 / 100)+
+    outDF6$Pfert[outDF6$YEAR%in%c("2020","2021","2022")&outDF6$DOY=="1"] <- (3.0 / 100)+
         outDF6$Pfert[outDF6$YEAR=="2020"&outDF6$DOY=="1"]
     
     ### output DF 1
