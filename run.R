@@ -181,4 +181,9 @@ make_leaf_nutrient_concentration_parameter()
 ### Photosynthetic parameters
 make_g1_parameter()
 
+### Soil water content
+make_soil_water_content_dataset()
+
+
+
 ###########################################################################
