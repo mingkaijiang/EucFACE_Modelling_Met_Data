@@ -21,4 +21,34 @@ make_lai_validation_dataset <- function(){
     colnames(out) <- c("Date", "Trt", "lai", "laiSD")
     
     write.csv(out, "output/validation_datasets/EucFACE_LAI_2012_2016.csv", row.names=F)
+    
+    
+    p1 <- ggplot(out, aes(Date, lai, col=Trt)) +
+        geom_ribbon(aes(x=Date, ymin=lai-laiSD,
+                        ymax=lai+laiSD, fill=Trt), alpha=0.1, lty=0.2)+
+        geom_line(lwd = 1) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=12),
+              panel.grid.major=element_blank(),
+              plot.title = element_text(size = 10, face = "bold"))+
+        ylab("LAI")+
+        scale_fill_manual(
+                          breaks=c("aCO2", "eCO2"),
+                          values=c("blue2", "red3"),
+                          labels=c(expression(aC[a]), expression(eC[a])))+
+        scale_color_manual(breaks=c("aCO2", "eCO2"),
+                           values=c("blue2", "red3"),
+                           labels=c(expression(aC[a]), expression(eC[a])))
+    
+    pdf("output/validation_datasets/LAI.pdf", width=6, height=4)
+    
+    plot(p1)
+    
+    dev.off()
 }
