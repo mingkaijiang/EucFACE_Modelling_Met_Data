@@ -65,4 +65,6 @@ make_soil_water_content_dataset <- function() {
     
     
     write.csv(newDF, "output/validation_datasets/EucFACE_swc_ambient_interpolated.csv", row.names=F)
+    
+    
 }
