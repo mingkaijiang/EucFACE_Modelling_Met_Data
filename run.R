@@ -182,7 +182,7 @@ make_leaf_nutrient_concentration_parameter()
 make_g1_parameter()
 
 ### Soil water content
-make_soil_water_content_dataset()
+make_soil_water_content_dataset_2()
 
 ### understorey SLA
 make_understorey_SLA()

@@ -74,7 +74,7 @@ pacman::p_load(dplyr,
                ncdf4,
                plantecophys,
                zoo,
-               lubridate)    
+               akima)    
 
 #### Sourcing all R files in the modules subdirectory
 sourcefiles <- dir("modules", pattern="[.]R$", recursive = TRUE, full.names = TRUE)
