@@ -75,8 +75,7 @@ pacman::p_load(dplyr,
                plantecophys,
                zoo,
                akima,
-               soilphysics,
-               HydroMe)    
+               soilphysics)    
 
 #### Sourcing all R files in the modules subdirectory
 sourcefiles <- dir("modules", pattern="[.]R$", recursive = TRUE, full.names = TRUE)
