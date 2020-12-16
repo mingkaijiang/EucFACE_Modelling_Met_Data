@@ -4,7 +4,7 @@ make_soil_water_content_dataset_2 <- function() {
     myDF <- read.csv("tmp_data/soil_water_content.csv")
     
     myDF$Date <- as.Date(as.character(myDF$Date))
-    
+
     probe <- summaryBy(.~Location+Date+Depth+Probe.ID+Ring,FUN=mean,data=myDF,
                        keep.names=T,na.rm=T)
     ring <- summaryBy(.~Location+Date+Depth+Ring,FUN=mean,data=probe,keep.names=T,na.rm=T)
