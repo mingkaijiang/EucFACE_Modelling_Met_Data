@@ -3,20 +3,33 @@ fit_soil_water_retension <- function() {
     
     myDF <- read.csv("tmp_data/soil_water_content.csv")
 
-    ### for pedo transfer function to get soil retension curve
-    #require(soilassessment)
+
+    with(myDF, plot(VWC~GWC))
     
-    ### for calculating soil physics
-    #require(soilphysics)
     
-    h <- c(0.001, 50.65, 293.77, 790.14, 992.74, 5065, 10130, 15195)
-    w <- c(0.5650, 0.4013, 0.2502, 0.2324, 0.2307, 0.1926, 0.1812, 0.1730)
-    #fitsoilwater(w, h)
+    data('dataSHP')
     
-    require(devtools)
-    install_github("mrke/NicheMapR")
+    # -------------------------------------------------------------------
+    # fit Soil Hydraulic Properties (SHP)
+    # -------------------------------------------------------------------
     
-    require(githubinstall)
-    githubinstall("NicheMapR")
+    ans <- fitSHP(obs = list(th = dataSHP$th, K = dataSHP$Ku),
+                  suc = list(th = dataSHP$suc, K = dataSHP$suc),
+                  FUN.shp = 'vg',
+                  modality = 'uni',
+                  par.shp = NULL,
+                  fit = 'both',
+                  weighting = 'var',
+                  log = c('alfa', 'n', 'ks'),
+                  control = list(ncomplex = 15, reltol = 1e-07,tolsteps = 7),
+                  suc.negativ = TRUE,
+                  integral = FALSE,
+                  L = 0,
+                  print.info = TRUE
+    )
+    
+    ans$par
+    plot(ans)
+    
 
 }
