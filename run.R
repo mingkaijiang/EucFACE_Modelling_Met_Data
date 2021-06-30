@@ -162,6 +162,11 @@ move_all_met_data_into_GDAY_simulation_folders()
 
 
 
+### calculate annual NDEP, CO2, PDEP and PFERT
+calculate_annual_forcing()
+
+
+
 ###########################################################################
 ###                  Step 4: create validation dataset                  ###
 ###                                                                     ###
